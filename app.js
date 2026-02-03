@@ -100,22 +100,60 @@ function loadFuel() {
 // ================= WEATHER =================
 function loadWeather() {
   const box = document.getElementById("weather-info");
-  if (!box) return;
+  const mapDiv = document.getElementById("map");
+  if (!box || !mapDiv) return;
 
   const apiKey = "a711d55b1e89708be65819eb07c0eeba";
-  box.innerHTML = "📍 ඔබේ location අනුව weather load වෙමින්...";
+  box.innerHTML = "📍 Location අනුව weather load වෙමින්...";
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(pos => {
-      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&appid=${apiKey}&units=metric&lang=si`)
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+
+      // Init Map
+      const map = L.map('map').setView([lat, lon], 10);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      const marker = L.marker([lat, lon]).addTo(map)
+        .bindPopup('ඔබේ location').openPopup();
+
+      // Fetch Weather
+      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=si`)
         .then(res => res.json())
         .then(data => {
+          const weather = data.weather[0].main.toLowerCase(); // rain, clouds, clear...
+          const temp = Math.round(data.main.temp);
+          const desc = data.weather[0].description;
+
           box.innerHTML = `
             <h3>${data.name}</h3>
-            <p>🌡️ ${Math.round(data.main.temp)}°C</p>
-            <p>${data.weather[0].description}</p>
+            <p>🌡️ ${temp}°C</p>
+            <p>${desc}</p>
           `;
+
+          // Dynamic background color based on weather
+          let bgColor = '#f4f6f8'; // default
+          if (weather.includes('rain')) bgColor = '#6e8cd7';
+          else if (weather.includes('cloud')) bgColor = '#aab4c2';
+          else if (weather.includes('clear')) bgColor = '#ffd86f';
+          else if (weather.includes('snow')) bgColor = '#ffffff';
+
+          document.body.style.background = bgColor;
+
+          // Add weather marker icon
+          const iconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+          const weatherIcon = L.icon({
+            iconUrl,
+            iconSize: [60, 60],
+            iconAnchor: [30, 60]
+          });
+          L.marker([lat, lon], {icon: weatherIcon}).addTo(map)
+            .bindPopup(`${temp}°C, ${desc}`);
         });
+
     }, () => {
       box.innerHTML = "<p>Location ලබාගත නොහැක.</p>";
     });
@@ -123,6 +161,7 @@ function loadWeather() {
     box.innerHTML = "<p>Geolocation not supported.</p>";
   }
 }
+
 
 // ================= CURRENCY =================
 let currencyRates = {};
@@ -186,4 +225,5 @@ document.addEventListener("DOMContentLoaded", () => {
   loadWeather();
   loadCurrency();
 });
+
 
