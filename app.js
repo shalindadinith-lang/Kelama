@@ -164,8 +164,7 @@ function convertCurrency() {
 
 
 
-// auto load
-loadCurrency();
+
 
 
 
@@ -177,6 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadWeather();
   loadCurrency();
 });
+
 
 
 
