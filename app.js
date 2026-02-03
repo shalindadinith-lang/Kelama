@@ -149,11 +149,11 @@ function loadCurrency() {
 }
 
 function convertCurrency() {
-  const amount = document.getElementById("amount").value;
+  const amount = parseFloat(document.getElementById("amount").value);
   const from = document.getElementById("fromCurrency").value;
   const to = document.getElementById("toCurrency").value;
 
-  if (!currencyRates[from] || !currencyRates[to]) return;
+  if (!currencyRates[from] || !currencyRates[to] || isNaN(amount)) return;
 
   const lkrValue = amount / currencyRates[from];
   const result = lkrValue * currencyRates[to];
@@ -162,6 +162,13 @@ function convertCurrency() {
     `${amount} ${from} = ${result.toFixed(2)} ${to}`;
 }
 
+// Dark Mode toggle
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
+}
+
+// auto load
+loadCurrency();
 
 
 
@@ -176,6 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadWeather();
   loadCurrency();
 });
+
 
 
 
