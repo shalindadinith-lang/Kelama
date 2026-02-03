@@ -67,11 +67,25 @@ function loadFuel() {
 
 // ================= WEATHER =================
 function loadWeather() {
-  const box = document.getElementById("a711d55b1e89708be65819eb07c0eeba");
+  const box = document.getElementById("weather-info");
   if (!box) return;
 
-  box.innerHTML = "<p>කාලගුණ data load වෙමින්...</p>";
+  const apiKey = "a711d55b1e89708be65819eb07c0eeba";
+  box.innerHTML = "📍 ඔබේ location අනුව weather load වෙමින්...";
+
+  navigator.geolocation.getCurrentPosition(pos => {
+    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&appid=${apiKey}&units=metric&lang=si`)
+      .then(res => res.json())
+      .then(data => {
+        box.innerHTML = `
+          <h3>${data.name}</h3>
+          <p>🌡️ ${Math.round(data.main.temp)}°C</p>
+          <p>${data.weather[0].description}</p>
+        `;
+      });
+  });
 }
+
 
 // ================= CURRENCY =================
 function loadCurrency() {
@@ -107,4 +121,5 @@ document.addEventListener("DOMContentLoaded", () => {
   loadWeather();
   loadCurrency();
 });
+
 
