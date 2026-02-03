@@ -12,6 +12,7 @@ if (localStorage.getItem("darkMode") === "enabled") {
 }
 
 // ================= NEWS =================
+// ================= NEWS =================
 let newsItems = [];
 
 function loadNews() {
@@ -22,7 +23,7 @@ function loadNews() {
     .then(res => res.json())
     .then(data => {
       if (!data.items) throw "No news";
-      newsItems = data.items.slice(0, 10);
+      newsItems = data.items.slice(0, 20); // first 20 news
       renderNews();
     })
     .catch(() => {
@@ -30,20 +31,37 @@ function loadNews() {
     });
 }
 
-function renderNews() {
+function renderNews(items = newsItems) {
   const container = document.getElementById("news-container");
   if (!container) return;
 
   container.innerHTML = "";
-  newsItems.forEach(item => {
+  items.forEach(item => {
     container.innerHTML += `
       <div class="news-item">
         <h3><a href="${item.link}" target="_blank">${item.title}</a></h3>
         <small>${new Date(item.pubDate).toLocaleString("si-LK")}</small>
         <p>${item.description.substring(0,150)}...</p>
-      </div>`;
+      </div>
+    `;
   });
 }
+
+// ================= SEARCH FILTER =================
+function filterNews() {
+  const query = document.getElementById("news-search").value.toLowerCase();
+  const filtered = newsItems.filter(item =>
+    item.title.toLowerCase().includes(query) ||
+    item.description.toLowerCase().includes(query)
+  );
+  renderNews(filtered);
+}
+
+// Load news when DOM ready
+document.addEventListener("DOMContentLoaded", () => {
+  loadNews();
+});
+
 
 // ================= FUEL =================
 function loadFuel() {
@@ -168,3 +186,4 @@ document.addEventListener("DOMContentLoaded", () => {
   loadWeather();
   loadCurrency();
 });
+
