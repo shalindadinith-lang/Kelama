@@ -239,7 +239,14 @@ const channels = [
   {
     name: "Hiru TV LIVE",
     url: "https://www.youtube.com/embed/abc123XYZ?autoplay=1&mute=1"
+  },
+
+   {
+    name: "Srilanka Cricket",
+    url: "https://www.youtube.com/watch?v=LhDR57UXZ1w"
   }
+
+  
 ];
 
 function loadChannels() {
@@ -279,6 +286,7 @@ function toggleDarkMode() {
 if (localStorage.getItem("darkMode") === "enabled") {
   document.body.classList.add("dark");
 }
+
 
 
 
