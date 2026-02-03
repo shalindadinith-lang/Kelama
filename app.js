@@ -67,7 +67,7 @@ function loadFuel() {
 
 // ================= WEATHER =================
 function loadWeather() {
-  const box = document.getElementById("weather-info");
+  const box = document.getElementById("a711d55b1e89708be65819eb07c0eeba");
   if (!box) return;
 
   box.innerHTML = "<p>කාලගුණ data load වෙමින්...</p>";
@@ -107,3 +107,4 @@ document.addEventListener("DOMContentLoaded", () => {
   loadWeather();
   loadCurrency();
 });
+
