@@ -31,30 +31,27 @@
   </p>
 
  <section class="card">
-  <h3>💱 Currency Converter</h3>
+    <h3>Current Rates (1 LKR)</h3>
+    <div id="currency-container">
+      <p>ලෝඩ් වෙමින්...</p>
+    </div>
 
-  <div id="currency-container">
-    <p>ලෝඩ් වෙමින්...</p>
-  </div>
+    <hr style="margin:15px 0;">
 
-  <hr style="margin:15px 0;">
-
-  <div class="converter">
-    <input type="number" id="amount" placeholder="Amount" value="1">
-
-    <select id="fromCurrency"></select>
-    <span style="font-weight:bold;">➡</span>
-    <select id="toCurrency"></select>
-
-    <button onclick="convertCurrency()">Convert</button>
-
-    <h4 id="convertResult"></h4>
-  </div>
-</section>
+    <div class="converter">
+      <input type="number" id="amount" placeholder="Amount" value="1">
+      <select id="fromCurrency"></select>
+      <span style="font-weight:bold;">➡</span>
+      <select id="toCurrency"></select>
+      <button onclick="convertCurrency()">Convert</button>
+      <h4 id="convertResult"></h4>
+    </div>
+  </section>
 
 </main>
 
 <script src="app.js"></script>
 </body>
 </html>
+
 
