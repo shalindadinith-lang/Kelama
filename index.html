@@ -23,9 +23,83 @@
   <main>
     <h2>සාදරයෙන් පිළිගන්නවා! 🇱🇰</h2>
     <p>මෙහි ඔබට ලංකාවේ තත්ත්වයන් ගැන real-time තොරතුරු ලැබෙනවා: පුවත්, Live TV, කාලගුණය, ඉන්ධන මිල, විදුලි කප්පාදු, සහ currency rates.</p>
-    <section id="currency-container">Currency rates ලෝඩ් වෙමින්...</section>
+
+
+    
+    <!-- Currency section එකේ තියෙන div එකට id දෙන්න, උදා: -->
+<div id="currency-rates">Currency rates ලෝඩ් වෙමින්...</div>
+
+<script>
+async function loadCurrencyRates() {
+  try {
+    // Option 1: No API key needed (open access) - LKR base
+    const response = await fetch('https://open.er-api.com/v6/latest/LKR');
+    
+    // Option 2: If you have API key
+    // const apiKey = 'YOUR_API_KEY_HERE'; // ඔයාගේ key මෙතන දාන්න
+    // const response = await fetch(`https://v6.exchangerate-api.com/v6/${apiKey}/latest/LKR`);
+
+    if (!response.ok) throw new Error('API error');
+
+    const data = await response.json();
+
+    if (data.result !== 'success') {
+      document.getElementById('currency-rates').innerHTML = 'Rates load කරන්න බැරි උනා 😔';
+      return;
+    }
+
+    const rates = data.rates;
+
+    // ඔයාට ඕන top currencies select කරගන්න (LKR 1 = ?)
+    const importantCurrencies = {
+      'USD': rates.USD,
+      'EUR': rates.EUR,
+      'GBP': rates.GBP,
+      'INR': rates.INR,
+      'AED': rates.AED,   // UAE Dirham (දුබායි ගියාම ඕන)
+      'AUD': rates.AUD,
+      // තව ඕන නම් එකතු කරන්න
+    };
+
+    let html = '<h3>1 LKR =</h3><ul>';
+    for (let [currency, rate] of Object.entries(importantCurrencies)) {
+      html += `<li>${currency}: ${rate.toFixed(4)}</li>`;
+    }
+    html += '</ul>';
+
+    // Updated time එකත් දාන්න පුළුවන්
+    const time = new Date(data.time_last_update_utc).toLocaleString('si-LK');
+    html += `<small>Updated: ${time}</small>`;
+
+    document.getElementById('currency-rates').innerHTML = html;
+
+  } catch (error) {
+    console.error(error);
+    document.getElementById('currency-rates').innerHTML = 'Error loading rates... Check internet?';
+  }
+}
+
+// Page load වෙනකොට run කරන්න
+window.onload = loadCurrencyRates;
+
+// Optional: every 1 hour refresh (3600000 ms)
+setInterval(loadCurrencyRates, 3600000);
+</script>
+
+
+
+
+
+
+    
     <p>ඔයාගේ suggestions තියෙනවනම් කියන්න – upgrade කරමු!</p>
   </main>
-  <script src="app.js"></script>
+  <script src="app.js">   
+  
+  
+  
+  
+  </script>
 </body>
+
 </html>
