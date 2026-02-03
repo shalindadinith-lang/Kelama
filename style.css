@@ -69,34 +69,21 @@ h1, h2 {
 }
 
 /* CARD SECTIONS */
-.converter {
-  text-align: center;
+.card {
+  background: #fff;
+  padding: 16px;
+  margin: 12px 0;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  transition: transform 0.2s;
 }
 
-.converter input,
-.converter select {
-  padding: 8px;
-  margin: 6px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+.card:hover {
+  transform: translateY(-3px);
 }
 
-.converter button {
-  padding: 8px 16px;
-  background: #006600;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-.converter button:hover {
-  opacity: 0.9;
-}
-
-#convertResult {
-  margin-top: 10px;
-  font-size: 1.1rem;
+body.dark .card {
+  background: #1e1e1e;
 }
 
 
@@ -125,4 +112,5 @@ iframe {
     height: 240px;
   }
 }
+
 
