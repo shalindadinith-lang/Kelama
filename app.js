@@ -107,8 +107,13 @@ function loadWeather() {
 
 
 // ================= CURRENCY =================
+let currencyRates = {};
+
 function loadCurrency() {
   const container = document.getElementById("currency-container");
+  const fromSelect = document.getElementById("fromCurrency");
+  const toSelect = document.getElementById("toCurrency");
+
   if (!container) return;
 
   const apiKey = "d6853e194d8c83d637d92f65";
@@ -118,20 +123,47 @@ function loadCurrency() {
     .then(data => {
       if (data.result !== "success") throw "API Error";
 
-      const r = data.conversion_rates;
+      currencyRates = data.conversion_rates;
+
       container.innerHTML = `
-        <h3>1 LKR =</h3>
-        <p>USD: ${r.USD.toFixed(4)}</p>
-        <p>EUR: ${r.EUR.toFixed(4)}</p>
-        <p>GBP: ${r.GBP.toFixed(4)}</p>
-        <p>INR: ${r.INR.toFixed(2)}</p>
+        <p>1 LKR =</p>
+        <p>USD: ${currencyRates.USD.toFixed(4)}</p>
+        <p>EUR: ${currencyRates.EUR.toFixed(4)}</p>
+        <p>GBP: ${currencyRates.GBP.toFixed(4)}</p>
+        <p>INR: ${currencyRates.INR.toFixed(2)}</p>
         <small>${new Date(data.time_last_update_utc).toLocaleString("si-LK")}</small>
       `;
+
+      // fill dropdowns
+      for (let code in currencyRates) {
+        fromSelect.innerHTML += `<option value="${code}">${code}</option>`;
+        toSelect.innerHTML += `<option value="${code}">${code}</option>`;
+      }
+
+      fromSelect.value = "LKR";
+      toSelect.value = "USD";
     })
     .catch(() => {
       container.innerHTML = "<p>Currency rates load වුණේ නැහැ.</p>";
     });
 }
+
+function convertCurrency() {
+  const amount = document.getElementById("amount").value;
+  const from = document.getElementById("fromCurrency").value;
+  const to = document.getElementById("toCurrency").value;
+
+  if (!currencyRates[from] || !currencyRates[to]) return;
+
+  const lkrValue = amount / currencyRates[from];
+  const result = lkrValue * currencyRates[to];
+
+  document.getElementById("convertResult").innerText =
+    `${amount} ${from} = ${result.toFixed(2)} ${to}`;
+}
+
+
+
 
 // ================= INIT =================
 document.addEventListener("DOMContentLoaded", () => {
@@ -140,6 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadWeather();
   loadCurrency();
 });
+
 
 
 
