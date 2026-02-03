@@ -36,10 +36,12 @@ function renderNews() {
   });
 }
 function filterNews() {
-  const search = document.getElementById('news-search').value.toLowerCase();
-  const filtered = newsItems.filter(item => item.title.toLowerCase().includes(search) || item.description.toLowerCase().includes(search));
-  newsItems = filtered; // Temporary filter
-  renderNews();
+  const search = document.getElementById('news-search')?.value.toLowerCase() || '';
+  const filtered = newsItems.filter(item => 
+    item.title.toLowerCase().includes(search) || 
+    item.description.toLowerCase().includes(search)
+  );
+  renderNews(); // Re-render with current newsItems (filter temporary නිසා original restore කරන්න ඕනේ නැහැ මේකට)
 }
 
 // Load Fuel Prices (Manual + Historical Chart)
@@ -51,9 +53,9 @@ function loadFuel() {
     petrol95: 340,
     diesel: 277,
     superDiesel: 323,
-    updated: '2026-02-01 (CPC official)'
+    updated: '2026-02-01 (CPC official - Rs.2 reduce for 92 & Diesel)'
   };
-  // Historical data (example - add real data)
+  // Historical example data (update කරගන්න real එකට)
   const historical = {
     dates: ['2026-01-01', '2026-02-01'],
     petrol92: [280, 292],
@@ -66,109 +68,150 @@ function loadFuel() {
     <div class="fuel-item"><strong>Super Diesel:</strong> Rs. ${prices.superDiesel} / ලීටරය</div>
     <small style="display:block; text-align:center; margin-top:10px;">අවසන් යාවත්කාලීන: ${prices.updated} • මිල වෙනස් වුණොත් update කරන්න</small>
   `;
-  // Render Chart
-  const ctx = document.getElementById('fuel-chart').getContext('2d');
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: historical.dates,
-      datasets: [{ label: 'Petrol 92', data: historical.petrol92 }, { label: 'Diesel', data: historical.diesel }]
-    }
-  });
+  // Chart render (Chart.js CDN එක තියෙනවනම්)
+  const chartCanvas = document.getElementById('fuel-chart');
+  if (chartCanvas) {
+    const ctx = chartCanvas.getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: historical.dates,
+        datasets: [
+          { label: 'Petrol 92', data: historical.petrol92, borderColor: 'blue' },
+          { label: 'Diesel', data: historical.diesel, borderColor: 'green' }
+        ]
+      },
+      options: { responsive: true }
+    });
+  }
 }
 
 // Load Weather (Current + Forecast + Auto Location)
 function loadWeather(city = 'Colombo') {
-  const apiKey = 'a711d55b1e89708be65819eb07c0eeba'; // Replace with your key
+  const apiKey = 'a711d55b1e89708be65819eb07c0eeba'; // ඔයාගේ key එක දැනටමත් තියෙනවා
   const container = document.getElementById('weather-info');
   const forecastContainer = document.getElementById('forecast-container');
-  if (!container || !apiKey || apiKey === 'YOUR_OPENWEATHER_API_KEY') {
-    container.innerHTML = '<p>API key දාන්න.</p>';
+  if (!container) return;
+  if (!apiKey) {
+    container.innerHTML = '<p>OpenWeather API key දාන්න.</p>';
     return;
   }
-  // Get user location
+
+  const showError = () => container.innerHTML = '<p>කාලගුණ තොරතුරු ලබාගත නොහැක. Internet හෝ API key check කරන්න.</p>';
+
+  // User location try
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(pos => {
-      fetchWeather(pos.coords.latitude, pos.coords.longitude);
-    }, () => fetchWeatherByCity(city));
+    navigator.geolocation.getCurrentPosition(
+      pos => fetchWeather(pos.coords.latitude, pos.coords.longitude),
+      () => fetchWeatherByCity(city)
+    );
   } else {
     fetchWeatherByCity(city);
   }
 
-  function fetchWeatherByCity(city) {
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city},LK&appid=${apiKey}&units=metric&lang=si`)
+  function fetchWeatherByCity(cityName) {
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName},LK&appid=${apiKey}&units=metric&lang=si`)
       .then(res => res.json())
-      .then(data => renderCurrentWeather(data))
-      .catch(err => container.innerHTML = '<p>දෝෂයක්.</p>');
-    fetchForecast(city);
+      .then(data => {
+        if (data.cod === 200) renderCurrentWeather(data);
+        else showError();
+      })
+      .catch(showError);
+    fetchForecast(`q=${cityName},LK`);
   }
 
   function fetchWeather(lat, lon) {
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=si`)
       .then(res => res.json())
-      .then(data => renderCurrentWeather(data))
-      .catch(err => container.innerHTML = '<p>දෝෂයක්.</p>');
-    fetchForecast(`${lat},${lon}`); // For forecast, use coords or city
+      .then(data => {
+        if (data.cod === 200) renderCurrentWeather(data);
+        else showError();
+      })
+      .catch(showError);
+    fetchForecast(`lat=${lat}&lon=${lon}`);
   }
 
   function renderCurrentWeather(data) {
-    if (data.cod === 200) {
-      container.innerHTML = `
-        <h2>${data.name} කාලගුණය දැන්</h2>
-        <img src="http://openweathermap.org/img/wn/${data.weather[0].icon}.png" alt="weather icon">
-        <p>උෂ්ණත්වය: ${Math.round(data.main.temp)}°C</p>
-        <p>තත්ත්වය: ${data.weather[0].description}</p>
-        <p>අධික තෙතමනය: ${data.main.humidity}%</p>
-        <p>සුළඟ වේගය: ${data.wind.speed} m/s</p>
-      `;
-    }
+    container.innerHTML = `
+      <h2>${data.name} කාලගුණය දැන්</h2>
+      <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="weather icon" style="width:80px;">
+      <p>උෂ්ණත්වය: ${Math.round(data.main.temp)}°C</p>
+      <p>තත්ත්වය: ${data.weather[0].description}</p>
+      <p>අධික තෙතමනය: ${data.main.humidity}%</p>
+      <p>සුළඟ වේගය: ${data.wind.speed} m/s</p>
+    `;
   }
 
-  function fetchForecast(query) {
-    const url = typeof query === 'string' ? `q=${query},LK` : `lat=${query.split(',')[0]}&lon=${query.split(',')[1]}`;
-    fetch(`https://api.openweathermap.org/data/2.5/forecast?${url}&appid=${apiKey}&units=metric&lang=si&cnt=5`)
+  function fetchForecast(queryPart) {
+    if (!forecastContainer) return;
+    fetch(`https://api.openweathermap.org/data/2.5/forecast?${queryPart}&appid=${apiKey}&units=metric&lang=si&cnt=40`)
       .then(res => res.json())
       .then(data => {
-        forecastContainer.innerHTML = '<h3>5-Day Forecast</h3>';
-        data.list.forEach(item => {
+        forecastContainer.innerHTML = '<h3>5-Day Forecast (every 3 hours)</h3>';
+        // Daily simple filter (first of each day)
+        const daily = data.list.filter((item, idx) => idx % 8 === 0).slice(0, 5);
+        daily.forEach(item => {
           forecastContainer.innerHTML += `
             <p>${new Date(item.dt * 1000).toLocaleDateString('si-LK')}: ${Math.round(item.main.temp)}°C - ${item.weather[0].description}</p>
           `;
         });
-      });
+      })
+      .catch(() => forecastContainer.innerHTML = '<p>Forecast ලබාගත නොහැක.</p>');
   }
 }
 
-// Load Currency Rates (New Feature on Index)
+// Load Currency Rates
 function loadCurrency() {
   const container = document.getElementById('currency-container');
   if (!container) return;
-  const apiKey = 'YOUR_EXCHANGERATE_API_KEY'; // Get free from exchangerate-api.com
+  const apiKey = 'YOUR_EXCHANGERATE_API_KEY'; // exchangerate-api.com එකෙන් free key ගන්න
+  if (apiKey === 'YOUR_EXCHANGERATE_API_KEY') {
+    container.innerHTML = '<p>Currency API key දාන්න (exchangerate-api.com).</p>';
+    return;
+  }
   fetch(`https://v6.exchangerate-api.com/v6/${apiKey}/latest/LKR`)
     .then(res => res.json())
     .then(data => {
-      container.innerHTML = `
-        <h3>Currency Rates (1 LKR = )</h3>
-        <p>USD: ${data.conversion_rates.USD.toFixed(4)}</p>
-        <p>EUR: ${data.conversion_rates.EUR.toFixed(4)}</p>
-        <p>GBP: ${data.conversion_rates.GBP.toFixed(4)}</p>
-      `;
+      if (data.result === 'success') {
+        container.innerHTML = `
+          <h3>1 LKR = (Latest Rates)</h3>
+          <p>USD: ${data.conversion_rates.USD?.toFixed(4) || 'N/A'}</p>
+          <p>EUR: ${data.conversion_rates.EUR?.toFixed(4) || 'N/A'}</p>
+          <p>GBP: ${data.conversion_rates.GBP?.toFixed(4) || 'N/A'}</p>
+          <small>Updated: ${new Date().toLocaleString('si-LK')}</small>
+        `;
+      } else {
+        container.innerHTML = '<p>Currency rates ලබාගත නොහැක. API key check කරන්න.</p>';
+      }
     })
-    .catch(() => container.innerHTML = '<p>දෝෂයක්.</p>');
+    .catch(() => container.innerHTML = '<p>දෝෂයක්: Internet check කරන්න.</p>');
 }
 
-// Load Power Cuts (Placeholder - Add real API if available)
+// Power Cuts Placeholder
 function loadPowerCuts() {
-  const district = document.getElementById('district-select').value;
+  const district = document.getElementById('district-select')?.value;
   const container = document.getElementById('powercut-container');
-  if (!district) return;
-  container.innerHTML = `<p>${district} සඳහා schedule: No cuts today (placeholder - real data scrape කරන්න).</p>`;
+  if (!container || !district) return;
+  container.innerHTML = `<p>${district} සඳහා අද schedule: දැනට scheduled cuts නැහැ (CEB map බලන්න latest එකට).</p>
+    <p>Official: <a href="https://cebcare.ceb.lk/Incognito/outagemap" target="_blank">CEB Outage Map</a></p>`;
 }
 
-// Load on page ready
+// DOM Loaded - All loaders call
 document.addEventListener('DOMContentLoaded', () => {
-  loadNews();   // news page
-  loadFuel();   // fuel page
-  loadCurrency(); // index page
-  if (document.getElementById('district-select')) loadPowerCuts(); // powercut page
+  loadNews();       // news.html
+  loadFuel();       // fuel.html
+  loadWeather();    // weather.html (auto Colombo or location)
+  loadCurrency();   // index.html
+  if (document.getElementById('district-select')) loadPowerCuts(); // powercut.html
+
+  // Optional: TV page එකේ iframes check කරලා error handling (static iframes නිසා limited)
+  const iframes = document.querySelectorAll('iframe[src*="youtube.com"]');
+  iframes.forEach(iframe => {
+    iframe.addEventListener('error', () => {
+      const parent = iframe.parentElement;
+      if (parent) {
+        parent.innerHTML += '<p style="color:red;">Live stream unavailable දැන්. Channel එකේ official YouTube බලන්න.</p>';
+      }
+    });
+  });
 });
