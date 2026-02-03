@@ -2,17 +2,38 @@
 <html lang="si">
 <head>
   <meta charset="UTF-8">
-  <title>කාලගුණය</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>කාලගුණය - ශ්‍රී ලංකා Live</title>
+
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- Leaflet.js for map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
+  <header>
+    <h1>🌦️ කාලගුණ තොරතුරු</h1>
+    <nav>
+      <a href="index.html">මුල් පිටුව</a>
+      <a href="news.html">පුවත්</a>
+      <a href="tv.html">Live TV</a>
+      <a href="weather.html">කාලගුණය</a>
+      <button onclick="toggleDarkMode()">🌙 Dark Mode</button>
+    </nav>
+  </header>
 
-<h2>🌦️ කාලගුණ තොරතුරු</h2>
+  <main>
+    <section class="card">
+      <div id="weather-info">Weather load වෙමින්...</div>
+      <div id="map" style="height: 400px; margin-top: 15px; border-radius: 12px;"></div>
+    </section>
+  </main>
 
-<div id="weather-info">
-  Weather load වෙමින්...
-</div>
+  <!-- Leaflet.js -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-<script src="app.js"></script>
+  <!-- JS -->
+  <script src="app.js"></script>
 </body>
 </html>
