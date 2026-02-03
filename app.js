@@ -181,8 +181,9 @@ document.addEventListener("DOMContentLoaded", () => {
   loadNews();
   loadFuel();
   loadWeather();
-  loadCurrency();
+  //loadCurrency();
 });
+
 
 
 
