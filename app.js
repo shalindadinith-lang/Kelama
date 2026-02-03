@@ -46,24 +46,43 @@ function renderNews() {
 }
 
 // ================= FUEL =================
-function loadFuel() {
-  const container = document.getElementById("fuel-container");
-  if (!container) return;
+const ctx = document.getElementById('fuelChart');
 
-  const prices = {
-    petrol92: 292,
-    petrol95: 340,
-    diesel: 277,
-    superDiesel: 323
-  };
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: [
+      'Petrol 92',
+      'Petrol 95',
+      'Auto Diesel',
+      'Super Diesel',
+      'Kerosene'
+    ],
+    datasets: [{
+      label: 'මිල (LKR)',
+      data: [183, 245, 116, 155, 95], // update when price changes
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          font: {
+            size: 14
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
 
-  container.innerHTML = `
-    <p>Petrol 92: Rs.${prices.petrol92}</p>
-    <p>Petrol 95: Rs.${prices.petrol95}</p>
-    <p>Diesel: Rs.${prices.diesel}</p>
-    <p>Super Diesel: Rs.${prices.superDiesel}</p>
-  `;
-}
 
 // ================= WEATHER =================
 function loadWeather() {
@@ -121,5 +140,6 @@ document.addEventListener("DOMContentLoaded", () => {
   loadWeather();
   loadCurrency();
 });
+
 
 
