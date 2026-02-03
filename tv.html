@@ -1,94 +1,37 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="si">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live TV - ශ්‍රී ලංකා</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala&display=swap" rel="stylesheet">
+  <title>Live TV - ශ්‍රී ලංකා Live</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header><!-- header + nav --></header>
+  <header>
+    <h1>📺 Live TV</h1>
+    <nav>
+      <a href="index.html">මුල් පිටුව</a>
+      <a href="news.html">පුවත්</a>
+      <a href="tv.html">Live TV</a>
+      <a href="weather.html">කාලගුණය</a>
+      <a href="fuel.html">ඉන්ධන මිල</a>
+      <button onclick="toggleDarkMode()">🌙 Dark Mode</button>
+    </nav>
+  </header>
+
   <main>
-  <h2>Live TV Channels</h2>
+    <section class="card">
+      <h2>Live TV Channels</h2>
+      
+      <select id="tvSelect" onchange="changeChannel()">
+        <option value="https://www.youtube.com/embed/2Vv-BfVoq4g?autoplay=1">Channel 1 - Example</option>
+        <option value="https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1">Channel 2 - Example</option>
+      </select>
 
-  <section>
-    <h3>Hiru TV</h3>
-    <iframe width="100%" height="400" 
-      src="https://www.youtube.com/watch?v=LRdflG_9wqw" 
-      frameborder="0" allowfullscreen></iframe>
-    <p>Live නැත්නම්: <a href="https://www.youtube.com/channel/UC2sO_F_Ky4LIAUtSJYXqBDA" target="_blank">Hiru TV YouTube බලන්න</a></p>
-  </section>
+      <iframe id="tvFrame" src="https://www.youtube.com/embed/2Vv-BfVoq4g?autoplay=1" allowfullscreen></iframe>
+    </section>
+  </main>
 
-<section>
-  <h3>Sri Lanka Cricket 🏏</h3>
-
-  <iframe 
-    width="100%" 
-    height="400"
-    src="https://www.youtube.com/embed/live_stream?channel=UCnXIYQJ6_4Jz9sF8RHEZK4w"
-    frameborder="0"
-    allowfullscreen>
-  </iframe>
-
-  <p>
-    Live නැත්නම්: 
-    <a href="https://www.youtube.com/@SriLankaCricket" target="_blank">
-      Sri Lanka Cricket YouTube බලන්න
-    </a>
-  </p>
-</section>
-
-
-
-     
-
-  <section>
-    <h3>TV Derana</h3>
-    <iframe width="100%" height="400" 
-      src="https://www.youtube.com/embed/live_stream?channel=UCbkMFGQ_RWIf0OiYeOpf6Ng"
-       src=" https://www.youtube.com/watch?v=isPXpaSag44  " 
-       
-      frameborder="0" allowfullscreen></iframe>
-    <p>Live නැත්නම්: <a href="https://www.youtube.com/channel/UCbkMFGQ_RWIf0OiYeOpf6Ng" target="_blank">Derana YouTube බලන්න</a></p>
-  </section>
-
-  <section>
-    <h3>Sirasa TV</h3>
-    <iframe width="100%" height="400" 
-      src="https://www.youtube.com/watch?v=CE0t_-SA8Co" 
-      frameborder="0" allowfullscreen></iframe>
-    <p>Live නැත්නම්: <a href="https://sirasatv.lk/live" target="_blank">Sirasa Official Live බලන්න</a></p>
-  </section>
-
-     <section>
-  <h3>News 1st (Newsfirst) Live - ප්‍රධාන ප්‍රවෘත්ති</h3>
-  <iframe 
-    width="100%" 
-    height="400" 
-    src="https://www.youtube.com/embed/live_stream?channel=UCgnFSj7jQffD5V5m05j4dPw" 
-    title="Newsfirst Sri Lanka Live" 
-    frameborder="0" 
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-    allowfullscreen>
-  </iframe>
-  <p>Live නැත්නම්: <a href="https://www.youtube.com/channel/UCgnFSj7jQffD5V5m05j4dPw" target="_blank">Newsfirst YouTube Channel බලන්න</a> (Sinhala / English news).</p>
-</section>
-
-  <p style="color: #666; margin-top: 20px;">
-    • Live stream active නැත්නම් black screen පේනවා – ඒක normal.<br>
-    • Evening / ප්‍රධාන ප්‍රවෘත්ති වෙලාවට refresh කරලා බලන්න.
-  </p>
-</main>
   <script src="app.js"></script>
-</body>  
-
+</body>
 </html>
-
-
-
-
-
-
-
-
