@@ -46,43 +46,38 @@ function renderNews() {
 }
 
 // ================= FUEL =================
-const ctx = document.getElementById('fuelChart');
+function loadFuel() {
+  const ctx = document.getElementById('fuelChart');
+  if (!ctx) return;
 
-new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: [
-      'Petrol 92',
-      'Petrol 95',
-      'Auto Diesel',
-      'Super Diesel',
-      'Kerosene'
-    ],
-    datasets: [{
-      label: 'මිල (LKR)',
-      data: [183, 245, 116, 155, 95], // update when price changes
-      borderWidth: 1
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: {
-        labels: {
-          font: {
-            size: 14
-          }
-        }
-      }
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [
+        'Petrol 92',
+        'Petrol 95',
+        'Auto Diesel',
+        'Super Diesel',
+        'Kerosene'
+      ],
+      datasets: [{
+        label: 'මිල (LKR)',
+        data: [183, 245, 116, 155, 95], // update when price changes
+        backgroundColor: ['#006600','#00aa00','#00cc00','#009900','#007700'],
+        borderWidth: 1
+      }]
     },
-    scales: {
-      y: {
-        beginAtZero: true
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: true }
       }
     }
-  }
-});
-
+  });
+}
 
 // ================= WEATHER =================
 function loadWeather() {
@@ -92,19 +87,24 @@ function loadWeather() {
   const apiKey = "a711d55b1e89708be65819eb07c0eeba";
   box.innerHTML = "📍 ඔබේ location අනුව weather load වෙමින්...";
 
-  navigator.geolocation.getCurrentPosition(pos => {
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&appid=${apiKey}&units=metric&lang=si`)
-      .then(res => res.json())
-      .then(data => {
-        box.innerHTML = `
-          <h3>${data.name}</h3>
-          <p>🌡️ ${Math.round(data.main.temp)}°C</p>
-          <p>${data.weather[0].description}</p>
-        `;
-      });
-  });
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&appid=${apiKey}&units=metric&lang=si`)
+        .then(res => res.json())
+        .then(data => {
+          box.innerHTML = `
+            <h3>${data.name}</h3>
+            <p>🌡️ ${Math.round(data.main.temp)}°C</p>
+            <p>${data.weather[0].description}</p>
+          `;
+        });
+    }, () => {
+      box.innerHTML = "<p>Location ලබාගත නොහැක.</p>";
+    });
+  } else {
+    box.innerHTML = "<p>Geolocation not supported.</p>";
+  }
 }
-
 
 // ================= CURRENCY =================
 let currencyRates = {};
@@ -134,7 +134,6 @@ function loadCurrency() {
         <small>${new Date(data.time_last_update_utc).toLocaleString("si-LK")}</small>
       `;
 
-      // fill dropdowns
       for (let code in currencyRates) {
         fromSelect.innerHTML += `<option value="${code}">${code}</option>`;
         toSelect.innerHTML += `<option value="${code}">${code}</option>`;
@@ -162,32 +161,10 @@ function convertCurrency() {
     `${amount} ${from} = ${result.toFixed(2)} ${to}`;
 }
 
-// Dark Mode toggle
-function toggleDarkMode() {
-  document.body.classList.toggle("dark");
-}
-
-// auto load
-loadCurrency();
-
-
-
-
-
-
-
 // ================= INIT =================
 document.addEventListener("DOMContentLoaded", () => {
   loadNews();
   loadFuel();
   loadWeather();
-  //loadCurrency();
+  loadCurrency();
 });
-
-
-
-
-
-
-
-
