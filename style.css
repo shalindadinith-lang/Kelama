@@ -122,7 +122,16 @@ body.dark .news-item {
   background: #1e1e1e;
 }
 
+
+iframe {
+  width: 100%;
+  height: 360px;
+  border-radius: 12px;
+  border: none;
+}
+
 /* MOBILE */
 @media (max-width: 600px) {
   nav a { display: block; margin: 8px 0; }
 }
+
