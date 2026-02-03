@@ -226,4 +226,32 @@ document.addEventListener("DOMContentLoaded", () => {
   loadCurrency();
 });
 
+//tv
+
+function changeChannel() {
+  const select = document.getElementById("tvSelect");
+  const iframe = document.getElementById("tvFrame");
+  iframe.src = select.value;
+}
+
+// Dark mode toggle (already in your app.js)
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
+  localStorage.setItem(
+    "darkMode",
+    document.body.classList.contains("dark") ? "enabled" : "disabled"
+  );
+}
+
+if (localStorage.getItem("darkMode") === "enabled") {
+  document.body.classList.add("dark");
+}
+
+
+
+
+
+
+
+
 
