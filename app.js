@@ -41,10 +41,22 @@ function filterNews() {
     item.title.toLowerCase().includes(search) || 
     item.description.toLowerCase().includes(search)
   );
-  renderNews(); // Re-render with current newsItems (filter temporary නිසා original restore කරන්න ඕනේ නැහැ මේකට)
+  // Temporary render filtered (original list එක change නොකර)
+  const container = document.getElementById('news-container');
+  container.innerHTML = '';
+  filtered.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'news-item';
+    div.innerHTML = `
+      <h3><a href="${item.link}" target="_blank" style="color: inherit;">${item.title}</a></h3>
+      <small>${new Date(item.pubDate).toLocaleString('si-LK')}</small>
+      <p>${item.description.substring(0, 150)}...</p>
+    `;
+    container.appendChild(div);
+  });
 }
 
-// Load Fuel Prices (Manual + Historical Chart)
+// Load Fuel Prices (Updated for Feb 2026 - CPC Rs.2 reduce for 92 & Diesel)
 function loadFuel() {
   const container = document.getElementById('fuel-container');
   if (!container) return;
@@ -53,13 +65,13 @@ function loadFuel() {
     petrol95: 340,
     diesel: 277,
     superDiesel: 323,
-    updated: '2026-02-01 (CPC official - Rs.2 reduce for 92 & Diesel)'
+    updated: '2026-02-01 (CPC official - Rs.2 reduce for 92 Octane & Diesel)'
   };
-  // Historical example data (update කරගන්න real එකට)
+  // Historical example data (ඔයාට real data add කරගන්න)
   const historical = {
     dates: ['2026-01-01', '2026-02-01'],
-    petrol92: [280, 292],
-    diesel: [270, 277]
+    petrol92: [294, 292],  // previous ≈294 → now 292
+    diesel: [279, 277]
   };
   container.innerHTML = `
     <div class="fuel-item"><strong>Petrol 92 Octane:</strong> Rs. ${prices.petrol92} / ලීටරය</div>
@@ -68,7 +80,7 @@ function loadFuel() {
     <div class="fuel-item"><strong>Super Diesel:</strong> Rs. ${prices.superDiesel} / ලීටරය</div>
     <small style="display:block; text-align:center; margin-top:10px;">අවසන් යාවත්කාලීන: ${prices.updated} • මිල වෙනස් වුණොත් update කරන්න</small>
   `;
-  // Chart render (Chart.js CDN එක තියෙනවනම්)
+  // Chart render (Chart.js CDN link තියෙනවනම් <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> add කරන්න head එකට)
   const chartCanvas = document.getElementById('fuel-chart');
   if (chartCanvas) {
     const ctx = chartCanvas.getContext('2d');
@@ -86,9 +98,9 @@ function loadFuel() {
   }
 }
 
-// Load Weather (Current + Forecast + Auto Location)
+// Load Weather (Current + Forecast + Auto Location) - ඔයාගේ OpenWeather key එක දැනටමත් තියෙනවා
 function loadWeather(city = 'Colombo') {
-  const apiKey = 'a711d55b1e89708be65819eb07c0eeba'; // ඔයාගේ key එක දැනටමත් තියෙනවා
+  const apiKey = 'a711d55b1e89708be65819eb07c0eeba'; // ඔයාගේ key
   const container = document.getElementById('weather-info');
   const forecastContainer = document.getElementById('forecast-container');
   if (!container) return;
@@ -99,7 +111,6 @@ function loadWeather(city = 'Colombo') {
 
   const showError = () => container.innerHTML = '<p>කාලගුණ තොරතුරු ලබාගත නොහැක. Internet හෝ API key check කරන්න.</p>';
 
-  // User location try
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       pos => fetchWeather(pos.coords.latitude, pos.coords.longitude),
@@ -148,7 +159,6 @@ function loadWeather(city = 'Colombo') {
       .then(res => res.json())
       .then(data => {
         forecastContainer.innerHTML = '<h3>5-Day Forecast (every 3 hours)</h3>';
-        // Daily simple filter (first of each day)
         const daily = data.list.filter((item, idx) => idx % 8 === 0).slice(0, 5);
         daily.forEach(item => {
           forecastContainer.innerHTML += `
@@ -160,31 +170,35 @@ function loadWeather(city = 'Colombo') {
   }
 }
 
-// Load Currency Rates
+// Load Currency Rates - NOW FIXED with your real key!
 function loadCurrency() {
   const container = document.getElementById('currency-container');
   if (!container) return;
-  const apiKey = 'd6853e194d8c83d637d92f65'; // exchangerate-api.com එකෙන් free key ගන්න
-  if (apiKey === 'd6853e194d8c83d637d92f65') {
-    container.innerHTML = '<p>Currency API key දාන්න (exchangerate-api.com).</p>';
-    return;
-  }
+  
+  const apiKey = 'd6853e194d8c83d637d92f65';  // ඔයාගේ real key මෙතන දැම්මා (placeholder check එක ඉවත් කළා)
+  
   fetch(`https://v6.exchangerate-api.com/v6/${apiKey}/latest/LKR`)
     .then(res => res.json())
     .then(data => {
       if (data.result === 'success') {
+        const rates = data.conversion_rates;
         container.innerHTML = `
           <h3>1 LKR = (Latest Rates)</h3>
-          <p>USD: ${data.conversion_rates.USD?.toFixed(4) || 'N/A'}</p>
-          <p>EUR: ${data.conversion_rates.EUR?.toFixed(4) || 'N/A'}</p>
-          <p>GBP: ${data.conversion_rates.GBP?.toFixed(4) || 'N/A'}</p>
-          <small>Updated: ${new Date().toLocaleString('si-LK')}</small>
+          <p>USD: ${rates.USD?.toFixed(4) || 'N/A'}</p>
+          <p>EUR: ${rates.EUR?.toFixed(4) || 'N/A'}</p>
+          <p>GBP: ${rates.GBP?.toFixed(4) || 'N/A'}</p>
+          <p>INR: ${rates.INR?.toFixed(2) || 'N/A'}</p>
+          <p>AED: ${rates.AED?.toFixed(4) || 'N/A'}</p>
+          <small>Updated: ${new Date(data.time_last_update_utc).toLocaleString('si-LK')}</small>
         `;
       } else {
-        container.innerHTML = '<p>Currency rates ලබාගත නොහැක. API key check කරන්න.</p>';
+        container.innerHTML = '<p>Currency rates ලබාගත නොහැක. API key හෝ internet check කරන්න. (Error: ' + (data['error-type'] || 'Unknown') + ')</p>';
       }
     })
-    .catch(() => container.innerHTML = '<p>දෝෂයක්: Internet check කරන්න.</p>');
+    .catch(err => {
+      console.error(err);
+      container.innerHTML = '<p>දෝෂයක්: Internet හෝ API endpoint check කරන්න.</p>';
+    });
 }
 
 // Power Cuts Placeholder
@@ -192,19 +206,21 @@ function loadPowerCuts() {
   const district = document.getElementById('district-select')?.value;
   const container = document.getElementById('powercut-container');
   if (!container || !district) return;
-  container.innerHTML = `<p>${district} සඳහා අද schedule: දැනට scheduled cuts නැහැ (CEB map බලන්න latest එකට).</p>
-    <p>Official: <a href="https://cebcare.ceb.lk/Incognito/outagemap" target="_blank">CEB Outage Map</a></p>`;
+  container.innerHTML = `
+    <p>${district} සඳහා අද schedule: දැනට scheduled cuts නැහැ (CEB map බලන්න latest එකට).</p>
+    <p>Official: <a href="https://cebcare.ceb.lk/Incognito/outagemap" target="_blank">CEB Outage Map</a></p>
+  `;
 }
 
 // DOM Loaded - All loaders call
 document.addEventListener('DOMContentLoaded', () => {
-  loadNews();       // news.html
-  loadFuel();       // fuel.html
-  loadWeather();    // weather.html (auto Colombo or location)
-  loadCurrency();   // index.html
-  if (document.getElementById('district-select')) loadPowerCuts(); // powercut.html
+  loadNews();          // news section/page
+  loadFuel();          // fuel section
+  loadWeather();       // weather section (auto location or Colombo)
+  loadCurrency();      // currency section - මේක දැන් work වෙන්න ඕනේ!
+  if (document.getElementById('district-select')) loadPowerCuts();
 
-  // Optional: TV page එකේ iframes check කරලා error handling (static iframes නිසා limited)
+  // Optional: YouTube iframes error handling
   const iframes = document.querySelectorAll('iframe[src*="youtube.com"]');
   iframes.forEach(iframe => {
     iframe.addEventListener('error', () => {
@@ -215,4 +231,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
-
