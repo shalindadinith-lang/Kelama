@@ -227,6 +227,39 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 //tv
+const channels = [
+  {
+    name: "Ada Derana LIVE",
+    url: "https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1&mute=1"
+  },
+  {
+    name: "Sirasa TV LIVE",
+    url: "https://www.youtube.com/embed/2Vv-BfVoq4g?autoplay=1&mute=1"
+  },
+  {
+    name: "Hiru TV LIVE",
+    url: "https://www.youtube.com/embed/abc123XYZ?autoplay=1&mute=1"
+  }
+];
+
+function loadChannels() {
+  const select = document.getElementById("tvSelect");
+  const frame = document.getElementById("tvFrame");
+
+  channels.forEach((ch, index) => {
+    const option = document.createElement("option");
+    option.value = ch.url;
+    option.textContent = "📺 " + ch.name;
+    select.appendChild(option);
+
+    if (index === 0) frame.src = ch.url;
+  });
+}
+
+
+
+
+//add kranna oni udata
 
 function changeChannel() {
   const select = document.getElementById("tvSelect");
@@ -246,6 +279,7 @@ function toggleDarkMode() {
 if (localStorage.getItem("darkMode") === "enabled") {
   document.body.classList.add("dark");
 }
+
 
 
 
