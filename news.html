@@ -4,19 +4,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>පුවත් - ශ්‍රී ලංකා Live</title>
+
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>ලංකාවේ තත්ත්වයන්</h1>
-    <nav><!-- same nav as index.html --></nav>
+    <h1>ශ්‍රී ලංකාවේ පුවත්</h1>
+    <nav>
+      <a href="index.html">මුල් පිටුව</a>
+      <a href="news.html">පුවත්</a>
+      <a href="tv.html">Live TV</a>
+      <a href="weather.html">කාලගුණය</a>
+      <a href="fuel.html">ඉන්ධන මිල</a>
+      <a href="powercut.html">විදුලි බිඳවැටීම්</a>
+      <button onclick="toggleDarkMode()">🌙 Dark Mode</button>
+    </nav>
   </header>
+
   <main>
     <h2>නවතම පුවත් (Ada Derana)</h2>
+
     <input type="text" id="news-search" placeholder="පුවත් සෙවීම..." oninput="filterNews()">
-    <section id="news-container">පුවත් ලෝඩ් වෙමින්...</section>
+
+    <section id="news-container">
+      <p>පුවත් ලෝඩ් වෙමින්...</p>
+    </section>
   </main>
+
+  <!-- JS -->
   <script src="app.js"></script>
 </body>
 </html>
