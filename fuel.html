@@ -3,18 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ඉන්ධන මිල</title>
+  <title>ඉන්ධන මිල 📊</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js for price chart -->
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-  <header><!-- header + nav --></header>
-  <main>
-    <h2>වත්මන් ඉන්ධන මිල (CPC)</h2>
-    <section id="fuel-container">මිල ලෝඩ් වෙමින්...</section>
-    <canvas id="fuel-chart" width="400" height="200"></canvas>
-  </main>
-  <script src="app.js"></script>
+
+<header>
+  <h1>ඉන්ධන මිල 📊</h1>
+  <nav>
+    <a href="index.html">⬅ Back</a>
+    <button onclick="toggleDarkMode()">🌙</button>
+  </nav>
+</header>
+
+<main>
+
+  <section class="card">
+    <h3>📊 අද ඉන්ධන මිල (LKR)</h3>
+    <canvas id="fuelChart"></canvas>
+  </section>
+
+</main>
+
+<script src="app.js"></script>
+<script src="fuel.js"></script>
 </body>
 </html>
