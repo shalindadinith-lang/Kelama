@@ -7,30 +7,33 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-
-  <!-- Chart.js (IMPORTANT) -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
+
 <header>
-  <h1>ශ්‍රී ලංකා Live Info Hub</h1>
+  <h1>ශ්‍රී ලංකා Live Info Hub 🇱🇰</h1>
   <nav>
     <a href="index.html">මුල් පිටුව</a>
     <a href="news.html">පුවත්</a>
     <a href="tv.html">Live TV</a>
     <a href="weather.html">කාලගුණය</a>
     <a href="fuel.html">ඉන්ධන මිල</a>
-    <a href="powercut.html">විදුලි බිඳවැටීම්</a>
-    <button onclick="toggleDarkMode()">🌙 Dark Mode</button>
+    <a href="powercut.html">විදුලි කප්පාදු</a>
+    <button onclick="toggleDarkMode()">🌙</button>
   </nav>
 </header>
 
 <main>
-  <h2>සාදරයෙන් පිළිගන්නවා! 🇱🇰</h2>
-  <p>පුවත්, Live TV, කාලගුණය, ඉන්ධන මිල, විදුලි කප්පාදු සහ currency rates.</p>
+  <h2>සාදරයෙන් පිළිගන්නවා!</h2>
+  <p style="text-align:center;">
+    පුවත් • Live TV • කාලගුණය • ඉන්ධන මිල • විදුලි කප්පාදු
+  </p>
 
-  <section id="currency-container">Currency rates ලෝඩ් වෙමින්...</section>
+  <section class="card">
+    <h3>💱 Currency Rates</h3>
+    <div id="currency-container">ලෝඩ් වෙමින්...</div>
+  </section>
 </main>
 
 <script src="app.js"></script>
