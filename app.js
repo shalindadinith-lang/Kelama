@@ -230,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
 const channels = [
   {
     name: "Ada Derana LIVE",
-    url: "https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1&mute=1"
+    url: "https://www.youtube.com/live/1foq6HUSEHg?si=QjdIdqSohQL1nSIg"
   },
   {
     name: "Sirasa TV LIVE",
@@ -286,6 +286,7 @@ function toggleDarkMode() {
 if (localStorage.getItem("darkMode") === "enabled") {
   document.body.classList.add("dark");
 }
+
 
 
 
