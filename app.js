@@ -164,8 +164,8 @@ function loadWeather(city = 'Colombo') {
 function loadCurrency() {
   const container = document.getElementById('currency-container');
   if (!container) return;
-  const apiKey = 'YOUR_EXCHANGERATE_API_KEY'; // exchangerate-api.com එකෙන් free key ගන්න
-  if (apiKey === 'YOUR_EXCHANGERATE_API_KEY') {
+  const apiKey = 'd6853e194d8c83d637d92f65'; // exchangerate-api.com එකෙන් free key ගන්න
+  if (apiKey === 'd6853e194d8c83d637d92f65') {
     container.innerHTML = '<p>Currency API key දාන්න (exchangerate-api.com).</p>';
     return;
   }
@@ -215,3 +215,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
