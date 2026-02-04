@@ -6,255 +6,151 @@
 
 body {
   font-family: 'Noto Sans Sinhala', sans-serif;
-  background: #f8f9fc;
-  color: #1a1a1a;
+  background: #f8f9fa;
+  color: #222;
   line-height: 1.6;
-  transition: all 0.4s ease;
+  transition: background 0.4s, color 0.4s;
 }
 
 body.dark {
-  background: #0f0f0f;
+  background: #121212;
   color: #e0e0e0;
 }
 
 header {
-  background: linear-gradient(135deg, #006600, #004d00);
+  background: #006600;
   color: white;
-  padding: 1.4rem 1rem;
+  padding: 1rem;
   text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+nav {
+  margin-top: 0.8rem;
 }
 
 nav a, nav button {
   color: white;
-  margin: 0 1rem;
+  margin: 0 0.9rem;
   text-decoration: none;
   font-weight: 600;
-  transition: 0.3s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.05rem;
 }
 
 nav button {
-  background: rgba(255,255,255,0.15);
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
 }
 
-nav a:hover, nav button:hover {
-  background: rgba(255,255,255,0.25);
+nav button:hover {
+  background: rgba(255,255,255,0.2);
 }
 
-/* Weather page */
-.weather-body {
-  background: linear-gradient(to bottom, #87ceeb, #e0f6ff);
-}
-
-.weather-body.dark {
-  background: linear-gradient(to bottom, #1e3a5f, #0f1e38);
-}
-
-.weather-container {
+main {
   max-width: 1100px;
-  margin: 2rem auto;
+  margin: 1.5rem auto;
   padding: 0 1rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
 }
 
-@media (max-width: 900px) {
-  .weather-container {
-    grid-template-columns: 1fr;
-  }
-}
-
-.weather-card {
-  background: rgba(255,255,255,0.92);
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-  backdrop-filter: blur(10px);
-  position: relative;
-  overflow: hidden;
-}
-
-.weather-body.dark .weather-card {
-  background: rgba(30,40,60,0.92);
-}
-
-.weather-icon {
-  font-size: 6rem;
-  text-align: center;
+h1, h2 {
   margin-bottom: 1rem;
-  min-height: 100px;
-}
-
-.temp-block {
-  font-size: 4.5rem;
-  font-weight: 700;
   text-align: center;
 }
 
-.temp-block sup {
-  font-size: 2rem;
-  vertical-align: top;
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.6rem;
+  margin: 1.5rem 0;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
 }
 
-.weather-main h2 {
+body.dark .card {
+  background: #1e1e1e;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.5);
+}
+
+.welcome {
   text-align: center;
-  margin: 0.8rem 0;
-  font-size: 1.8rem;
+  margin-bottom: 2.5rem;
 }
 
-.weather-details {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  font-size: 1.1rem;
+.currency-section .rates-display {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #f0f8f0;
+  border-radius: 8px;
 }
 
-/* Map */
-.map-container {
-  height: 480px;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+body.dark .rates-display {
+  background: #2a3a2a;
 }
 
-#map {
-  height: 100%;
+.converter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 1.2rem 0;
 }
 
-/* News */
-.search-container {
-  max-width: 600px;
-  margin: 2rem auto;
+.converter-controls input,
+.converter-controls select,
+.converter-controls button {
+  padding: 0.75rem 1rem;
+  font-size: 1.05rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+body.dark .converter-controls input,
+body.dark .converter-controls select {
+  background: #333;
+  color: white;
+  border-color: #555;
+}
+
+.converter-controls button {
+  background: #006600;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.converter-controls button:hover {
+  background: #004d00;
+}
+
+.result-box {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  min-height: 1.8rem;
+}
+
+#news-container .news-item {
+  border-bottom: 1px solid #eee;
+  padding: 1rem 0;
+}
+
+body.dark #news-container .news-item {
+  border-bottom: 1px solid #444;
 }
 
 #news-search {
   width: 100%;
-  padding: 1rem;
-  font-size: 1.1rem;
-  border: 2px solid #ddd;
-  border-radius: 12px;
-}
-
-.news-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 1.6rem;
-  padding: 1rem;
-}
-
-.news-item {
-  background: white;
-  border-radius: 12px;
-  padding: 1.4rem;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  transition: transform 0.25s, box-shadow 0.25s;
-}
-
-.news-item:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.14);
-}
-
-body.dark .news-item {
-  background: #1e1e1e;
-}
-
-/* Currency */
-.currency-card {
-  max-width: 600px;
-  margin: 2rem auto;
-}
-
-.rates-box {
-  background: #f0f9f0;
-  padding: 1.2rem;
-  border-radius: 12px;
-  margin-bottom: 1.5rem;
-}
-
-body.dark .rates-box {
-  background: #1a3a1a;
-}
-
-.converter-form {
-  display: grid;
-  gap: 1.2rem;
-}
-
-.input-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
-.input-group input,
-.input-group select {
-  width: 100%;
   padding: 0.9rem;
-  font-size: 1.1rem;
-  border: 2px solid #ccc;
-  border-radius: 10px;
+  margin-bottom: 1.2rem;
+  font-size: 1.05rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
-.convert-btn {
-  background: #006600;
+body.dark #news-search {
+  background: #333;
   color: white;
-  border: none;
-  padding: 1rem;
-  font-size: 1.15rem;
-  font-weight: 600;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 0.3s;
+  border-color: #555;
 }
 
-.convert-btn:hover {
-  background: #004d00;
-}
-
-.result-display {
-  font-size: 1.8rem;
-  font-weight: 700;
-  text-align: center;
-  margin: 1.8rem 0;
-  padding: 1rem;
-  background: #e8f5e9;
-  border-radius: 12px;
-  min-height: 60px;
-}
-
-body.dark .result-display {
-  background: #1b3a1b;
-}
-
-/* Share buttons */
-.share-buttons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.share-btn {
-  padding: 0.7rem 1.4rem;
-  border: none;
-  border-radius: 10px;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.share-btn.wa { background: #25D366; }
-.share-btn.fb { background: #1877F2; }
-
-.share-btn:hover {
-  opacity: 0.92;
-  transform: scale(1.04);
-}
