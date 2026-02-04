@@ -22,13 +22,15 @@ header {
   color: white;
   padding: 1rem;
   text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 nav {
   margin-top: 0.8rem;
 }
 
-nav a, nav button {
+nav a,
+nav button {
   color: white;
   margin: 0 0.9rem;
   text-decoration: none;
@@ -37,6 +39,7 @@ nav a, nav button {
   border: none;
   cursor: pointer;
   font-size: 1.05rem;
+  transition: all 0.2s;
 }
 
 nav button {
@@ -45,7 +48,7 @@ nav button {
 }
 
 nav button:hover {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 main {
@@ -54,7 +57,8 @@ main {
   padding: 0 1rem;
 }
 
-h1, h2 {
+h1,
+h2 {
   margin-bottom: 1rem;
   text-align: center;
 }
@@ -64,28 +68,75 @@ h1, h2 {
   border-radius: 12px;
   padding: 1.6rem;
   margin: 1.5rem 0;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
 }
 
 body.dark .card {
   background: #1e1e1e;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.5);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
 }
 
-.welcome {
+/* Weather specific styles */
+.weather-card {
   text-align: center;
-  margin-bottom: 2.5rem;
 }
 
+.weather-card h2 {
+  margin-bottom: 1.5rem;
+  color: #006600;
+}
+
+body.dark .weather-card h2 {
+  color: #66ff99;
+}
+
+#weather-info {
+  font-size: 1.1rem;
+}
+
+#weather-info h3 {
+  font-size: 1.6rem;
+  margin: 0.8rem 0;
+  color: #004d00;
+}
+
+body.dark #weather-info h3 {
+  color: #88ffaa;
+}
+
+#weather-info p {
+  margin: 0.6rem 0;
+  font-size: 1.15rem;
+}
+
+#weather-info small {
+  display: block;
+  margin-top: 1.2rem;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+body.dark #weather-info small {
+  color: #aaa;
+}
+
+/* Currency related styles */
 .currency-section .rates-display {
   margin: 1rem 0;
   padding: 1rem;
   background: #f0f8f0;
   border-radius: 8px;
+  border-left: 4px solid #006600;
 }
 
 body.dark .rates-display {
   background: #2a3a2a;
+  border-left-color: #66ff99;
 }
 
 .converter-controls {
@@ -93,6 +144,7 @@ body.dark .rates-display {
   flex-wrap: wrap;
   gap: 12px;
   margin: 1.2rem 0;
+  justify-content: center;
 }
 
 .converter-controls input,
@@ -102,6 +154,7 @@ body.dark .rates-display {
   font-size: 1.05rem;
   border-radius: 8px;
   border: 1px solid #ccc;
+  min-width: 180px;
 }
 
 body.dark .converter-controls input,
@@ -117,6 +170,7 @@ body.dark .converter-controls select {
   border: none;
   cursor: pointer;
   font-weight: 600;
+  min-width: 140px;
 }
 
 .converter-controls button:hover {
@@ -126,17 +180,35 @@ body.dark .converter-controls select {
 .result-box {
   font-size: 1.35rem;
   font-weight: 600;
-  margin-top: 1rem;
-  min-height: 1.8rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #e8f5e9;
+  border-radius: 10px;
+  text-align: center;
+  min-height: 2rem;
 }
 
+body.dark .result-box {
+  background: #1b3a1b;
+}
+
+/* News related styles */
 #news-container .news-item {
   border-bottom: 1px solid #eee;
   padding: 1rem 0;
+  transition: background 0.2s;
+}
+
+#news-container .news-item:hover {
+  background: #f8f9fa;
 }
 
 body.dark #news-container .news-item {
   border-bottom: 1px solid #444;
+}
+
+body.dark #news-container .news-item:hover {
+  background: #252525;
 }
 
 #news-search {
@@ -153,4 +225,3 @@ body.dark #news-search {
   color: white;
   border-color: #555;
 }
-
