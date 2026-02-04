@@ -24,35 +24,42 @@
 
   <main>
 
-    <section class="welcome">
-      <h2>සාදරයෙන් පිළිගන්නවා! 🇱🇰</h2>
-      <p>නවතම තොරතුරු එකම තැනකින් බලන්න.</p>
-    </section>
+   <main>
+  <section class="welcome">
+    <h2>සාදරයෙන් පිළිගන්නවා! 🇱🇰</h2>
+  </section>
 
-    <!-- Currency Converter -->
-    <section class="card currency-section">
-      <h2>මුදල් හුවමාරුව (LKR)</h2>
-      
-      <div id="currency-rates" class="rates-display">
-        <p>වත්මන් අනුපාත ලෝඩ් වෙමින්...</p>
+  <section class="card currency-card">
+    <h2>මුදල් හුවමාරුව</h2>
+    <div id="currency-rates" class="rates-box"></div>
+
+    <div class="converter-form">
+      <div class="input-group">
+        <label for="amount">LKR ප්‍රමාණය</label>
+        <input type="number" id="amount" placeholder="0.00" min="0" step="any">
       </div>
 
-      <div class="converter-controls">
-        <input type="number" id="amount" placeholder="LKR එකතු කරන්න" min="0" step="any">
+      <div class="input-group">
+        <label for="to-currency">වෙනස් කරන්න</label>
         <select id="to-currency">
           <option value="USD">USD - ඇමරිකානු ඩොලර්</option>
           <option value="EUR">EUR - යුරෝ</option>
           <option value="GBP">GBP - බ්‍රිතාන්‍ය පවුම්</option>
           <option value="INR">INR - ඉන්දියානු රුපියල්</option>
         </select>
-        <button onclick="convertNow()">Convert කරන්න</button>
       </div>
 
-      <div id="conversion-result" class="result-box"></div>
-    </section>
+      <button class="convert-btn" onclick="convertNow()">Convert කරන්න</button>
+    </div>
+
+    <div id="conversion-result" class="result-display"></div>
+    <div id="currency-share-buttons" class="share-buttons" style="display:none;"></div>
+  </section>
+</main>
 
   </main>
 
   <script src="app.js"></script>
 </body>
 </html>
+
