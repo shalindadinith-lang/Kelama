@@ -127,111 +127,36 @@ function filterNews() {
 // WEATHER – advanced
 // ---------------------
 function loadWeather() {
-  const card = document.getElementById('weather-card');
-  if (!card) return;
+  const cityName = document.getElementById('city-name');
+  if (!cityName) return;
 
-  const apiKey = "a711d55b1e89708be65819eb07c0eeba";
+  // Test message දාලා බලමු කේතය run වෙනවද කියලා
+  cityName.textContent = "TEST: කේතය ගියා";
 
-  document.getElementById('city-name').textContent = "ස්ථානය ලබාගෙන ඉන්නවා...";
+  if (!navigator.geolocation) {
+    cityName.textContent = "Location support නැහැ";
+    return;
+  }
 
-  navigator.geolocation.getCurrentPosition(pos => {
-    const lat = pos.coords.latitude;
-    const lon = pos.coords.longitude;
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      cityName.textContent = "Location ගත්තා! API call කරන්න යනවා...";
 
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=si`)
-      .then(res => res.json())
-      .then(data => {
-        // Main info
-        document.getElementById('city-name').textContent = data.name || "ඔබේ ප්‍රදේශය";
-        document.getElementById('temperature').textContent = Math.round(data.main.temp);
-        document.getElementById('description').textContent = data.weather[0].description;
-        document.getElementById('humidity').textContent = data.main.humidity;
-        document.getElementById('wind').textContent = data.wind.speed;
-        document.getElementById('feels-like').textContent = Math.round(data.main.feels_like);
-
-        // Icon / animation
-        const iconEl = document.getElementById('weather-icon');
-        const iconCode = data.weather[0].icon;
-        iconEl.innerHTML = getWeatherIcon(iconCode);
-
-        // Share
-        const shareDiv = document.getElementById('weather-share-buttons');
-        const shareText = `${data.name} කාලගුණය: ${Math.round(data.main.temp)}°C, ${data.weather[0].description}`;
-        shareDiv.innerHTML = `
-          <button class="share-btn wa" onclick='shareToWhatsApp("${shareText} - Sri Lanka Info Hub")'>WhatsApp</button>
-          <button class="share-btn fb" onclick='shareToFacebook()'>Facebook</button>
-        `;
-        shareDiv.style.display = 'flex';
-
-        // Map
-        initMap(lat, lon, data.name);
-      })
-      .catch(() => {
-        document.getElementById('city-name').textContent = "කාලගුණය ලබාගත නොහැකි විය";
-      });
-  }, () => {
-    document.getElementById('city-name').textContent = "Location අවසරය අවශ්‍යයි";
-  });
+      // API call skip කරලා dummy data දාමු
+      setTimeout(() => {
+        cityName.textContent = "කොළඹ";
+        document.getElementById('temperature').textContent = "29";
+        document.getElementById('description').textContent = "අඳුරු වලාකුළු";
+        document.getElementById('humidity').textContent = "75";
+        document.getElementById('wind').textContent = "3.2";
+      }, 1500);
+    },
+    err => {
+      cityName.textContent = "Location ගන්න බැහැ: " + err.message;
+      console.log("Geolocation error:", err);
+    }
+  );
 }
-
-function getWeatherIcon(code) {
-  const icons = {
-    '01d': '☀️', '01n': '🌙',
-    '02d': '⛅', '02n': '☁️',
-    '03d': '☁️', '03n': '☁️',
-    '04d': '☁️', '04n': '☁️',
-    '09d': '🌧️', '09n': '🌧️',
-    '10d': '🌦️', '10n': '🌧️',
-    '11d': '⛈️', '11n': '⛈️',
-    '13d': '❄️', '13n': '❄️',
-    '50d': '🌫️', '50n': '🌫️'
-  };
-  return icons[code] || '🌍';
-}
-
-let mapInstance = null;
-function initMap(lat, lon, city) {
-  if (mapInstance) mapInstance.remove();
-  mapInstance = L.map('map').setView([lat, lon], 11);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(mapInstance);
-
-  L.marker([lat, lon]).addTo(mapInstance)
-    .bindPopup(`<b>${city}</b><br>ඔබ මෙහි ඉන්නවා`)
-    .openPopup();
-}
-
-// ---------------------
-// NEWS – modern cards
-// ---------------------
-function renderNews(items) {
-  const container = document.getElementById('news-container');
-  if (!container) return;
-
-  container.innerHTML = items.length === 0 ? '<p style="text-align:center;color:#777;">පුවත් හමු නොවිණි</p>' : '';
-
-  items.forEach(item => {
-    const title = item.title.replace(/"/g, '&quot;');
-    const link = item.link;
-    const shareText = `${title} - Ada Derana`;
-
-    const card = document.createElement('div');
-    card.className = 'news-item';
-    card.innerHTML = `
-      <h3><a href="${link}" target="_blank">${item.title}</a></h3>
-      <div class="news-meta">${new Date(item.pubDate).toLocaleString('si-LK')}</div>
-      <p>${item.description.substring(0, 140)}${item.description.length > 140 ? '...' : ''}</p>
-      <div class="share-buttons">
-        <button class="share-btn wa" onclick='shareToWhatsApp("${shareText}", "${link}")'>WhatsApp</button>
-        <button class="share-btn fb" onclick='shareToFacebook("${link}")'>Facebook</button>
-      </div>
-    `;
-    container.appendChild(card);
-  });
-}
-
 // ---------------------
 // CURRENCY – nicer result
 // ---------------------
@@ -264,5 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadWeather();
   }
 });
+
 
 
