@@ -4,11 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>පුවත් - ශ්‍රී ලංකා</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <header>
     <h1>නවතම පුවත්</h1>
     <nav>
@@ -18,11 +17,11 @@
   </header>
 
   <main>
-    <section class="card">
-      <h2>අලුත්ම පුවත් (Ada Derana)</h2>
-      <input type="text" id="news-search" placeholder="පුවත් සෙවීම..." oninput="filterNews()">
-      <div id="news-container">පුවත් ලෝඩ් වෙමින්...</div>
-    </section>
+    <div class="search-container">
+      <input type="text" id="news-search" placeholder="පුවත් සොයන්න..." oninput="filterNews()">
+    </div>
+
+    <div id="news-container" class="news-grid"></div>
   </main>
 
   <script src="app.js"></script>
