@@ -18,7 +18,6 @@ let newsItems = [];
 function loadNews() {
   const container = document.getElementById("news-container");
   if (!container) return;
-
   fetch("https://api.rss2json.com/v1/api.json?rss_url=https://www.adaderana.lk/rss.php")
     .then(res => res.json())
     .then(data => {
@@ -34,18 +33,62 @@ function loadNews() {
 function renderNews(items = newsItems) {
   const container = document.getElementById("news-container");
   if (!container) return;
-
   container.innerHTML = "";
   items.forEach(item => {
     container.innerHTML += `
       <div class="news-item">
-        <h3><a href="${item.link}" target="_blank">${item.title}</a></h3>
+        <h3><a href="#" onclick="showArticle('${item.link}')">${item.title}</a></h3>
         <small>${new Date(item.pubDate).toLocaleString("si-LK")}</small>
-        <p>${item.description.substring(0,150)}...</p>
+        <p>${item.description}</p> <!-- Removed substring to show full description -->
       </div>
     `;
   });
 }
+
+function filterNews() {
+  const search = document.getElementById('news-search').value.toLowerCase();
+  const filtered = newsItems.filter(item => 
+    item.title.toLowerCase().includes(search) || 
+    item.description.toLowerCase().includes(search)
+  );
+  renderNews(filtered);
+}
+
+function showArticle(url) {
+  document.getElementById('article-frame').src = url;
+  document.getElementById('modal').style.display = 'block';
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+  document.getElementById('article-frame').src = '';
+}
+
+// Close modal on outside click
+window.onclick = function(event) {
+  var modal = document.getElementById('modal');
+  if (event.target == modal) {
+    closeModal();
+  }
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle('dark');
+  if (document.body.classList.contains('dark')) {
+    localStorage.setItem('theme', 'dark');
+  } else {
+    localStorage.setItem('theme', 'light');
+  }
+}
+
+// Load theme on page load
+const theme = localStorage.getItem('theme');
+if (theme === 'dark') {
+  document.body.classList.add('dark');
+}
+
+// Load news on page load
+loadNews();
 
 // ================= SEARCH FILTER =================
 function filterNews() {
@@ -286,6 +329,7 @@ function toggleDarkMode() {
 if (localStorage.getItem("darkMode") === "enabled") {
   document.body.classList.add("dark");
 }
+
 
 
 
