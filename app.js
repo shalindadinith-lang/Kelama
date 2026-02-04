@@ -127,99 +127,104 @@ function filterNews() {
 // WEATHER – advanced
 // ---------------------
 function loadWeather() {
-  const cityName = document.getElementById('city-name');
-  const temperature = document.getElementById('temperature');
-  const description = document.getElementById('description');
-  const humidity = document.getElementById('humidity');
-  const wind = document.getElementById('wind');
-  const feelsLike = document.getElementById('feels-like');
-  const iconEl = document.getElementById('weather-icon');
-  const shareDiv = document.getElementById('weather-share-buttons');
+    const container = document.getElementById('weather-info');
+    if (!container) {
+        console.warn("weather-info element හොයාගන්න බැරි වුණා");
+        return;
+    }
 
-  if (!cityName) return;
+    const apiKey = "a711d55b1e89708be65819eb07c0eeba";
 
-  cityName.textContent = "ස්ථානය ලබාගෙන ඉන්නවා...";
-  temperature.textContent = "--";
-  description.textContent = "--";
+    // Loading message (කලින් තිබුණු එක තියාගත්තා)
+    container.innerHTML = "📍 ඔබේ ස්ථානය ලබාගෙන කාලගුණය ලෝඩ් වෙමින්...";
 
-  const apiKey = "a711d55b1e89708be65819eb07c0eeba";
+    // Geolocation support තියෙනවද කියලා බලමු
+    if (!navigator.geolocation) {
+        container.innerHTML = '<p style="color:#e74c3c;">ඔබේ browser එක location support කරන්නේ නැහැ.</p>';
+        return;
+    }
 
-  if (!navigator.geolocation) {
-    cityName.textContent = "ඔබේ browser එක location support කරන්නේ නැහැ";
-    return;
-  }
+    // Geolocation ඉල්ලමු
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
 
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
+            // API call කරමු
+            fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=si`)
+                .then((response) => {
+                    // Response OK ද කියලා බලමු
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    // API එකෙන් error එකක් ආවද කියලා බලමු
+                    if (data.cod && data.cod !== 200) {
+                        throw new Error(data.message || "API එකෙන් දත්ත ආවේ නැහැ");
+                    }
 
-      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=si`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`API error: ${response.status} ${response.statusText}`);
-          }
-          return response.json();
-        })
-        .then((data) => {
-          if (data.cod !== 200) {
-            throw new Error(data.message || "Unknown error");
-          }
+                    // සාර්ථක නම් UI update කරමු (කලින් තිබුණු format එක + කුඩා improvements)
+                    container.innerHTML = `
+                        <h3>${data.name || 'ඔබේ ප්‍රදේශය'}</h3>
+                        <p>🌡️ ${Math.round(data.main.temp)} °C</p>
+                        <p>${data.weather[0]?.description || 'විස්තරයක් නැහැ'}</p>
+                        <p>💧 ආර්ද්‍රතාව: ${data.main.humidity}%</p>
+                        <p>💨 සුළඟ: ${data.wind?.speed || '--'} m/s</p>
+                        <small>අවසන් යාවත්කාලීනය: ${new Date().toLocaleTimeString('si-LK')}</small>
+                    `;
+                })
+                .catch((err) => {
+                    console.error("Weather fetch error:", err);
 
-          cityName.textContent = data.name || "ඔබේ ප්‍රදේශය";
-          temperature.textContent = Math.round(data.main.temp);
-          description.textContent = data.weather[0].description;
-          humidity.textContent = data.main.humidity;
-          wind.textContent = data.wind.speed.toFixed(1);
-          feelsLike.textContent = Math.round(data.main.feels_like);
+                    let errorMessage = "කාලගුණ තොරතුරු ලබාගත නොහැක.";
+                    
+                    // වෙනස් වරදවල් වලට වෙනස් messages
+                    if (err.message.includes("401")) {
+                        errorMessage += " (API key වැරදියි)";
+                    } else if (err.message.includes("429")) {
+                        errorMessage += " (API calls limit ඉක්මවලා - පසුව උත්සාහ කරන්න)";
+                    } else if (err.message.includes("404")) {
+                        errorMessage += " (ස්ථානය හොයාගන්න බැරි වුණා)";
+                    } else {
+                        errorMessage += ` (${err.message})`;
+                    }
 
-          // Icon
-          const iconCode = data.weather[0].icon;
-          iconEl.innerHTML = getWeatherIcon(iconCode);
+                    container.innerHTML = `<p style="color:#e74c3c;">${errorMessage}</p>`;
+                });
+        },
 
-          // Share buttons
-          const shareText = `${data.name} කාලගුණය: ${Math.round(data.main.temp)}°C, ${data.weather[0].description}`;
-          shareDiv.innerHTML = `
-            <button class="share-btn wa" onclick='shareToWhatsApp("${shareText} - Kelama")'>WhatsApp</button>
-            <button class="share-btn fb" onclick='shareToFacebook()'>Facebook</button>
-          `;
-          shareDiv.style.display = 'flex';
+        // Geolocation error handling (කලින් තිබුණු එක improve කළා)
+        (err) => {
+            console.error("Geolocation error:", err);
 
-          // Optional: Map init කරන්න ඕන නම් මෙතන තියන්න
-          // initMap(lat, lon, data.name);
-        })
-        .catch((err) => {
-          console.error("Weather fetch error:", err);
-          cityName.textContent = "කාලගුණ තොරතුරු ලබාගන්න බැරි වුණා";
-          description.textContent = err.message.includes("401") ? "(API key ගැටලුවක්)" : "";
-        });
-    },
-    (err) => {
-      console.error("Geolocation error:", err);
-      let msg = "Location ලබාගැනීමට ඉඩ දුන්නේ නැහැ";
-      if (err.code === 1) msg += " (Permission denied)";
-      if (err.code === 2) msg += " (Position unavailable)";
-      if (err.code === 3) msg += " (Timeout)";
-      cityName.textContent = msg;
-    },
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-  );
-}
+            let msg = "ස්ථානය ලබාගැනීමට අවසර නැත.";
 
-// Weather icon function (ඔබට තිබුණු එක use කරන්න)
-function getWeatherIcon(code) {
-  const icons = {
-    '01d': '☀️', '01n': '🌙',
-    '02d': '⛅', '02n': '🌤️',
-    '03d': '☁️', '03n': '☁️',
-    '04d': '☁️', '04n': '☁️',
-    '09d': '🌧️', '09n': '🌧️',
-    '10d': '🌦️', '10n': '🌧️',
-    '11d': '⛈️', '11n': '⛈️',
-    '13d': '❄️', '13n': '❄️',
-    '50d': '🌫️', '50n': '🌫️'
-  };
-  return icons[code] || '🌍';
+            switch (err.code) {
+                case 1:
+                    msg = "Location access ඉඩ දුන්නේ නැහැ. Browser settings එකෙන් Allow කරන්න.";
+                    break;
+                case 2:
+                    msg = "ස්ථානය ලබාගන්න බැරි වුණා (position unavailable).";
+                    break;
+                case 3:
+                    msg = "ස්ථානය ලබාගන්න ගියාම timeout උනා.";
+                    break;
+                default:
+                    msg += ` (${err.message})`;
+            }
+
+            container.innerHTML = `<p style="color:#e74c3c;">${msg}</p>`;
+        },
+
+        // Options - ටිකක් accurate කරන්න
+        {
+            enableHighAccuracy: true,
+            timeout: 12000,       // 12 seconds max wait කරනවා
+            maximumAge: 0         // cache එක use කරන්න එපා
+        }
+    );
 }
 // ---------------------
 // CURRENCY – nicer result
@@ -253,6 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadWeather();
   }
 });
+
 
 
 
