@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>කාලගුණය - ශ්‍රී ලංකා</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <title>කාලගුණය</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="weather-body">
+<body>
 
   <header>
     <h1>කාලගුණ තොරතුරු</h1>
@@ -19,31 +18,13 @@
   </header>
 
   <main>
-    <div class="weather-container">
-      <div class="weather-card" id="weather-card">
-        <div class="weather-icon" id="weather-icon"></div>
-        <div class="weather-main">
-          <h2 id="city-name">ස්ථානය ලබාගෙන ඉන්නවා...</h2>
-          <div class="temp-block">
-            <span id="temperature">--</span><sup>°C</sup>
-          </div>
-          <p id="description">--</p>
-        </div>
-        <div class="weather-details">
-          <p>💧 ආර්ද්‍රතාව: <span id="humidity">--</span>%</p>
-          <p>💨 සුළඟ: <span id="wind">--</span> m/s</p>
-          <p>🌡️ හැඟෙන උෂ්ණත්වය: <span id="feels-like">--</span>°C</p>
-        </div>
-        <div id="weather-share-buttons" class="share-buttons" style="display:none; margin-top:1.5rem;"></div>
-      </div>
-
-      <div class="map-container">
-        <div id="map"></div>
-      </div>
-    </div>
+    <section class="card weather-card">
+      <h2>ඔබේ ප්‍රදේශයේ කාලගුණය</h2>
+      <div id="weather-info">කාලගුණය ලෝඩ් වෙමින්...</div>
+    </section>
   </main>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
+
