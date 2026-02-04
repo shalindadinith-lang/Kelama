@@ -128,34 +128,98 @@ function filterNews() {
 // ---------------------
 function loadWeather() {
   const cityName = document.getElementById('city-name');
+  const temperature = document.getElementById('temperature');
+  const description = document.getElementById('description');
+  const humidity = document.getElementById('humidity');
+  const wind = document.getElementById('wind');
+  const feelsLike = document.getElementById('feels-like');
+  const iconEl = document.getElementById('weather-icon');
+  const shareDiv = document.getElementById('weather-share-buttons');
+
   if (!cityName) return;
 
-  // Test message දාලා බලමු කේතය run වෙනවද කියලා
-  cityName.textContent = "TEST: කේතය ගියා";
+  cityName.textContent = "ස්ථානය ලබාගෙන ඉන්නවා...";
+  temperature.textContent = "--";
+  description.textContent = "--";
+
+  const apiKey = "a711d55b1e89708be65819eb07c0eeba";
 
   if (!navigator.geolocation) {
-    cityName.textContent = "Location support නැහැ";
+    cityName.textContent = "ඔබේ browser එක location support කරන්නේ නැහැ";
     return;
   }
 
   navigator.geolocation.getCurrentPosition(
-    pos => {
-      cityName.textContent = "Location ගත්තා! API call කරන්න යනවා...";
+    (position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
 
-      // API call skip කරලා dummy data දාමු
-      setTimeout(() => {
-        cityName.textContent = "කොළඹ";
-        document.getElementById('temperature').textContent = "29";
-        document.getElementById('description').textContent = "අඳුරු වලාකුළු";
-        document.getElementById('humidity').textContent = "75";
-        document.getElementById('wind').textContent = "3.2";
-      }, 1500);
+      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=si`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`API error: ${response.status} ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data.cod !== 200) {
+            throw new Error(data.message || "Unknown error");
+          }
+
+          cityName.textContent = data.name || "ඔබේ ප්‍රදේශය";
+          temperature.textContent = Math.round(data.main.temp);
+          description.textContent = data.weather[0].description;
+          humidity.textContent = data.main.humidity;
+          wind.textContent = data.wind.speed.toFixed(1);
+          feelsLike.textContent = Math.round(data.main.feels_like);
+
+          // Icon
+          const iconCode = data.weather[0].icon;
+          iconEl.innerHTML = getWeatherIcon(iconCode);
+
+          // Share buttons
+          const shareText = `${data.name} කාලගුණය: ${Math.round(data.main.temp)}°C, ${data.weather[0].description}`;
+          shareDiv.innerHTML = `
+            <button class="share-btn wa" onclick='shareToWhatsApp("${shareText} - Kelama")'>WhatsApp</button>
+            <button class="share-btn fb" onclick='shareToFacebook()'>Facebook</button>
+          `;
+          shareDiv.style.display = 'flex';
+
+          // Optional: Map init කරන්න ඕන නම් මෙතන තියන්න
+          // initMap(lat, lon, data.name);
+        })
+        .catch((err) => {
+          console.error("Weather fetch error:", err);
+          cityName.textContent = "කාලගුණ තොරතුරු ලබාගන්න බැරි වුණා";
+          description.textContent = err.message.includes("401") ? "(API key ගැටලුවක්)" : "";
+        });
     },
-    err => {
-      cityName.textContent = "Location ගන්න බැහැ: " + err.message;
-      console.log("Geolocation error:", err);
-    }
+    (err) => {
+      console.error("Geolocation error:", err);
+      let msg = "Location ලබාගැනීමට ඉඩ දුන්නේ නැහැ";
+      if (err.code === 1) msg += " (Permission denied)";
+      if (err.code === 2) msg += " (Position unavailable)";
+      if (err.code === 3) msg += " (Timeout)";
+      cityName.textContent = msg;
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
   );
+}
+
+// Weather icon function (ඔබට තිබුණු එක use කරන්න)
+function getWeatherIcon(code) {
+  const icons = {
+    '01d': '☀️', '01n': '🌙',
+    '02d': '⛅', '02n': '🌤️',
+    '03d': '☁️', '03n': '☁️',
+    '04d': '☁️', '04n': '☁️',
+    '09d': '🌧️', '09n': '🌧️',
+    '10d': '🌦️', '10n': '🌧️',
+    '11d': '⛈️', '11n': '⛈️',
+    '13d': '❄️', '13n': '❄️',
+    '50d': '🌫️', '50n': '🌫️'
+  };
+  return icons[code] || '🌍';
 }
 // ---------------------
 // CURRENCY – nicer result
@@ -189,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadWeather();
   }
 });
+
 
 
 
