@@ -127,104 +127,34 @@ function filterNews() {
 // WEATHER – advanced
 // ---------------------
 function loadWeather() {
-    const container = document.getElementById('weather-info');
-    if (!container) {
-        console.warn("weather-info element හොයාගන්න බැරි වුණා");
-        return;
+  const container = document.getElementById('weather-info');
+  if (!container) return;
+
+  const apiKey = "a711d55b1e89708be65819eb07c0eeba";
+
+  container.innerHTML = "📍 ඔබේ ස්ථානය ලබාගෙන කාලගුණය ලෝඩ් වෙමින්...";
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&appid=${apiKey}&units=metric&lang=si`)
+        .then(res => res.json())
+        .then(data => {
+          container.innerHTML = `
+            <h3>${data.name || 'ඔබේ ප්‍රදේශය'}</h3>
+            <p>🌡️ ${Math.round(data.main.temp)} °C</p>
+            <p>${data.weather[0].description}</p>
+            <p>💧 ආර්ද්‍රතාව: ${data.main.humidity}%</p>
+            <p>💨 සුළඟ: ${data.wind.speed} m/s</p>
+          `;
+        })
+        .catch(() => {
+          container.innerHTML = '<p style="color:#e74c3c;">කාලගුණ තොරතුරු ලබාගත නොහැක.</p>';
+        });
+    },
+    () => {
+      container.innerHTML = '<p style="color:#e74c3c;">ස්ථානය ලබාගැනීමට අවසර නැත.</p>';
     }
-
-    const apiKey = "a711d55b1e89708be65819eb07c0eeba";
-
-    // Loading message (කලින් තිබුණු එක තියාගත්තා)
-    container.innerHTML = "📍 ඔබේ ස්ථානය ලබාගෙන කාලගුණය ලෝඩ් වෙමින්...";
-
-    // Geolocation support තියෙනවද කියලා බලමු
-    if (!navigator.geolocation) {
-        container.innerHTML = '<p style="color:#e74c3c;">ඔබේ browser එක location support කරන්නේ නැහැ.</p>';
-        return;
-    }
-
-    // Geolocation ඉල්ලමු
-    navigator.geolocation.getCurrentPosition(
-        (pos) => {
-            const lat = pos.coords.latitude;
-            const lon = pos.coords.longitude;
-
-            // API call කරමු
-            fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=si`)
-                .then((response) => {
-                    // Response OK ද කියලා බලමු
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    // API එකෙන් error එකක් ආවද කියලා බලමු
-                    if (data.cod && data.cod !== 200) {
-                        throw new Error(data.message || "API එකෙන් දත්ත ආවේ නැහැ");
-                    }
-
-                    // සාර්ථක නම් UI update කරමු (කලින් තිබුණු format එක + කුඩා improvements)
-                    container.innerHTML = `
-                        <h3>${data.name || 'ඔබේ ප්‍රදේශය'}</h3>
-                        <p>🌡️ ${Math.round(data.main.temp)} °C</p>
-                        <p>${data.weather[0]?.description || 'විස්තරයක් නැහැ'}</p>
-                        <p>💧 ආර්ද්‍රතාව: ${data.main.humidity}%</p>
-                        <p>💨 සුළඟ: ${data.wind?.speed || '--'} m/s</p>
-                        <small>අවසන් යාවත්කාලීනය: ${new Date().toLocaleTimeString('si-LK')}</small>
-                    `;
-                })
-                .catch((err) => {
-                    console.error("Weather fetch error:", err);
-
-                    let errorMessage = "කාලගුණ තොරතුරු ලබාගත නොහැක.";
-                    
-                    // වෙනස් වරදවල් වලට වෙනස් messages
-                    if (err.message.includes("401")) {
-                        errorMessage += " (API key වැරදියි)";
-                    } else if (err.message.includes("429")) {
-                        errorMessage += " (API calls limit ඉක්මවලා - පසුව උත්සාහ කරන්න)";
-                    } else if (err.message.includes("404")) {
-                        errorMessage += " (ස්ථානය හොයාගන්න බැරි වුණා)";
-                    } else {
-                        errorMessage += ` (${err.message})`;
-                    }
-
-                    container.innerHTML = `<p style="color:#e74c3c;">${errorMessage}</p>`;
-                });
-        },
-
-        // Geolocation error handling (කලින් තිබුණු එක improve කළා)
-        (err) => {
-            console.error("Geolocation error:", err);
-
-            let msg = "ස්ථානය ලබාගැනීමට අවසර නැත.";
-
-            switch (err.code) {
-                case 1:
-                    msg = "Location access ඉඩ දුන්නේ නැහැ. Browser settings එකෙන් Allow කරන්න.";
-                    break;
-                case 2:
-                    msg = "ස්ථානය ලබාගන්න බැරි වුණා (position unavailable).";
-                    break;
-                case 3:
-                    msg = "ස්ථානය ලබාගන්න ගියාම timeout උනා.";
-                    break;
-                default:
-                    msg += ` (${err.message})`;
-            }
-
-            container.innerHTML = `<p style="color:#e74c3c;">${msg}</p>`;
-        },
-
-        // Options - ටිකක් accurate කරන්න
-        {
-            enableHighAccuracy: true,
-            timeout: 12000,       // 12 seconds max wait කරනවා
-            maximumAge: 0         // cache එක use කරන්න එපා
-        }
-    );
+  );
 }
 // ---------------------
 // CURRENCY – nicer result
@@ -258,6 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadWeather();
   }
 });
+
 
 
 
