@@ -14,16 +14,15 @@ if (localStorage.getItem("darkMode") === "enabled") {
 // ================= NEWS =================
 let newsItems = [];
 let currentCategory = "all";
+
 const statusText = document.getElementById("status-text");
 
-// RSS feeds
 const rssFeeds = [
   "https://www.adaderana.lk/rss.php",
   "https://www.lankadeepa.lk/rss",
   "https://www.hirunews.lk/rss"
 ];
 
-// Category keywords
 const categories = {
   all: "",
   local: "sri lanka",
@@ -32,7 +31,6 @@ const categories = {
   business: "business"
 };
 
-// Translation cache
 function getTranslationCache() {
   return JSON.parse(localStorage.getItem("translation_cache") || "{}");
 }
@@ -40,7 +38,6 @@ function saveTranslationCache(cache) {
   localStorage.setItem("translation_cache", JSON.stringify(cache));
 }
 
-// Translate with cache
 async function translateToSinhala(text) {
   if (!text) return "";
   const cache = getTranslationCache();
@@ -66,27 +63,20 @@ async function translateToSinhala(text) {
   }
 }
 
-// Fetch RSS
 async function fetchRSS(rssUrl) {
   try {
     const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
     const data = await response.json();
     return data.items || [];
-  } catch {
+  } catch (err) {
     return [];
   }
 }
 
-// Extract highest-res image possible
 function extractImage(description) {
   if (!description) return "";
   const imgMatch = description.match(/<img[^>]+src="([^">]+)"/);
-  if (!imgMatch) return "";
-  let url = imgMatch[1];
-
-  // Try replace thumbnail URL pattern if feed uses "-thumb" or "-small"
-  url = url.replace(/(-thumb|-small)/i, "");
-  return url;
+  return imgMatch ? imgMatch[1] : "";
 }
 
 function cleanDescription(description) {
@@ -100,7 +90,6 @@ function shareToFacebook(title, link) {
   window.open(url, "_blank");
 }
 
-// Filter by category
 function filterByCategory(items, category) {
   const key = categories[category] || "";
   if (!key) return items;
@@ -112,12 +101,12 @@ function filterByCategory(items, category) {
   });
 }
 
-// Render news
 async function renderNews(items) {
   const container = document.getElementById("news-container");
   if (!container) return;
 
   container.innerHTML = "";
+
   if (!items || items.length === 0) {
     container.innerHTML = "<p>මෙම කාණ්ඩය සඳහා පුවත් නොමැත.</p>";
     return;
@@ -141,7 +130,6 @@ async function renderNews(items) {
   }
 }
 
-// Load news
 async function loadNews(category = "all", forceRefresh = false) {
   currentCategory = category;
   const container = document.getElementById("news-container");
@@ -187,7 +175,6 @@ async function loadNews(category = "all", forceRefresh = false) {
   }
 }
 
-// Auto refresh every 10 minutes
 setInterval(() => {
   loadNews(currentCategory, true);
 }, 600000);
