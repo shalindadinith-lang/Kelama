@@ -12,7 +12,6 @@ if (localStorage.getItem("darkMode") === "enabled") {
 }
 
 // ================= NEWS =================
-// ================= NEWS =================
 let newsItems = [];
 let currentCategory = "all";
 
@@ -22,7 +21,7 @@ const statusText = document.getElementById("status-text");
 const rssFeeds = [
   "https://www.adaderana.lk/rss.php",
   "https://www.lankadeepa.lk/rss",
-  "https://www.hirunews.lk/rss",
+  "https://www.hirunews.lk/rss"
 ];
 
 // Category keywords filter
@@ -94,14 +93,72 @@ function cleanDescription(description) {
 
 // Share to Facebook
 function shareToFacebook(title, link) {
+  if (!link) return;
   const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}&quote=${encodeURIComponent(title)}`;
   window.open(url, "_blank");
+}
+
+// ================= CATEGORY FILTER =================
+function filterByCategory(items, category) {
+  const key = categories[category] || "";
+  if (!key) return items;
+
+  return items.filter(item => {
+    const title = item.title || "";
+    const desc = item.description || "";
+    return (title + " " + desc).toLowerCase().includes(key);
+  });
+}
+
+// ================= SEARCH FILTER =================
+function filterBySearch() {
+  const searchInput = document.getElementById("news-search");
+  if (!searchInput) return;
+  const query = searchInput.value.toLowerCase();
+  const filtered = newsItems.filter(item => {
+    const title = item.title || "";
+    const desc = item.description || "";
+    return title.toLowerCase().includes(query) || desc.toLowerCase().includes(query);
+  });
+  renderNews(filtered);
+}
+
+// Render news cards
+async function renderNews(items) {
+  const container = document.getElementById("news-container");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  if (!items || items.length === 0) {
+    container.innerHTML = "<p>මෙම කාණ්ඩය සඳහා පුවත් නොමැත.</p>";
+    return;
+  }
+
+  items = items.slice(0, 25);
+
+  for (let item of items) {
+    const imgSrc = extractImage(item.description);
+    const cleanDesc = cleanDescription(item.description);
+    const titleSI = await translateToSinhala(item.title || "");
+
+    container.innerHTML += `
+      <div class="news-card">
+        ${imgSrc ? `<img src="${imgSrc}" alt="News Image">` : ""}
+        <h3><a href="${item.link}" target="_blank">${titleSI}</a></h3>
+        <p>${cleanDesc.substring(0, 160)}...</p>
+        <button onclick="shareToFacebook('${titleSI}', '${item.link}')">FB Share</button>
+      </div>
+    `;
+  }
 }
 
 // Load news
 async function loadNews(category = "all", forceRefresh = false) {
   currentCategory = category;
   const container = document.getElementById("news-container");
+  if (!container) return;
+
   container.innerHTML = "<p>පුවත් ලෝඩ් වෙමින්...</p>";
   statusText.innerText = "Loading news...";
 
@@ -109,7 +166,7 @@ async function loadNews(category = "all", forceRefresh = false) {
   if (!forceRefresh && cachedNews.length > 0) {
     newsItems = cachedNews;
     statusText.innerText = "✅ Loaded from cache";
-    displayNews(filterNews(newsItems, category));
+    renderNews(filterByCategory(newsItems, category));
     return;
   }
 
@@ -134,7 +191,7 @@ async function loadNews(category = "all", forceRefresh = false) {
     localStorage.setItem("news_cache", JSON.stringify(newsItems));
     statusText.innerText = "✅ Latest news loaded";
 
-    displayNews(filterNews(newsItems, category));
+    renderNews(filterByCategory(newsItems, category));
 
   } catch (error) {
     console.log(error);
@@ -143,64 +200,10 @@ async function loadNews(category = "all", forceRefresh = false) {
   }
 }
 
-// Filter by category
-function filterNews(items, category) {
-  const key = categories[category];
-  if (!key) return items;
-  return items.filter(item => (item.title + " " + item.description).toLowerCase().includes(key));
-}
-
-// Display news
-async function displayNews(items) {
-  const container = document.getElementById("news-container");
-  container.innerHTML = "";
-
-  if (!items || items.length === 0) {
-    container.innerHTML = "<p>මෙම කාණ්ඩය සඳහා පුවත් නොමැත.</p>";
-    return;
-  }
-
-  items = items.slice(0, 25);
-  for (let item of items) {
-    const imgSrc = extractImage(item.description);
-    const cleanDesc = cleanDescription(item.description);
-    const titleSI = await translateToSinhala(item.title);
-
-    container.innerHTML += `
-      <div class="news-card">
-        ${imgSrc ? `<img src="${imgSrc}" alt="News Image">` : ""}
-        <h3><a href="${item.link}" target="_blank">${titleSI}</a></h3>
-        <p>${cleanDesc.substring(0, 160)}...</p>
-        <button onclick="shareToFacebook('${titleSI}', '${item.link}')">FB Share</button>
-      </div>
-    `;
-  }
-}
-
 // Auto refresh every 10 minutes
 setInterval(() => {
   loadNews(currentCategory, true);
 }, 600000);
-
-// Initial load
-loadNews("all");
-
-
-// ================= SEARCH FILTER =================
-function filterNews() {
-  const query = document.getElementById("news-search").value.toLowerCase();
-  const filtered = newsItems.filter(item =>
-    item.title.toLowerCase().includes(query) ||
-    item.description.toLowerCase().includes(query)
-  );
-  renderNews(filtered);
-}
-
-// Load news when DOM ready
-document.addEventListener("DOMContentLoaded", () => {
-  loadNews();
-});
-
 
 // ================= FUEL =================
 function loadFuel() {
@@ -210,29 +213,15 @@ function loadFuel() {
   new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: [
-        'Petrol 92',
-        'Petrol 95',
-        'Auto Diesel',
-        'Super Diesel',
-        'Kerosene'
-      ],
+      labels: ['Petrol 92','Petrol 95','Auto Diesel','Super Diesel','Kerosene'],
       datasets: [{
         label: 'මිල (LKR)',
-        data: [183, 245, 116, 155, 95], // update when price changes
+        data: [183,245,116,155,95],
         backgroundColor: ['#006600','#00aa00','#00cc00','#009900','#007700'],
         borderWidth: 1
       }]
     },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false }
-      },
-      scales: {
-        y: { beginAtZero: true }
-      }
-    }
+    options: { responsive:true, plugins:{ legend:{display:false} }, scales:{y:{beginAtZero:true}} }
   });
 }
 
@@ -250,57 +239,36 @@ function loadWeather() {
       const lat = pos.coords.latitude;
       const lon = pos.coords.longitude;
 
-      // Init Map
       const map = L.map('map').setView([lat, lon], 10);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+      L.marker([lat, lon]).addTo(map).bindPopup('ඔබේ location').openPopup();
 
-      const marker = L.marker([lat, lon]).addTo(map)
-        .bindPopup('ඔබේ location').openPopup();
-
-      // Fetch Weather
       fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=si`)
         .then(res => res.json())
         .then(data => {
-          const weather = data.weather[0].main.toLowerCase(); // rain, clouds, clear...
+          const weather = data.weather[0].main.toLowerCase();
           const temp = Math.round(data.main.temp);
           const desc = data.weather[0].description;
 
-          box.innerHTML = `
-            <h3>${data.name}</h3>
-            <p>🌡️ ${temp}°C</p>
-            <p>${desc}</p>
-          `;
+          box.innerHTML = `<h3>${data.name}</h3><p>🌡️ ${temp}°C</p><p>${desc}</p>`;
 
-          // Dynamic background color based on weather
-          let bgColor = '#f4f6f8'; // default
+          let bgColor = '#f4f6f8';
           if (weather.includes('rain')) bgColor = '#6e8cd7';
           else if (weather.includes('cloud')) bgColor = '#aab4c2';
           else if (weather.includes('clear')) bgColor = '#ffd86f';
           else if (weather.includes('snow')) bgColor = '#ffffff';
-
           document.body.style.background = bgColor;
 
-          // Add weather marker icon
           const iconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
-          const weatherIcon = L.icon({
-            iconUrl,
-            iconSize: [60, 60],
-            iconAnchor: [30, 60]
-          });
-          L.marker([lat, lon], {icon: weatherIcon}).addTo(map)
-            .bindPopup(`${temp}°C, ${desc}`);
+          const weatherIcon = L.icon({ iconUrl, iconSize: [60,60], iconAnchor:[30,60] });
+          L.marker([lat, lon], {icon: weatherIcon}).addTo(map).bindPopup(`${temp}°C, ${desc}`);
         });
 
-    }, () => {
-      box.innerHTML = "<p>Location ලබාගත නොහැක.</p>";
-    });
+    }, () => { box.innerHTML = "<p>Location ලබාගත නොහැක.</p>"; });
   } else {
     box.innerHTML = "<p>Geolocation not supported.</p>";
   }
 }
-
 
 // ================= CURRENCY =================
 let currencyRates = {};
@@ -310,7 +278,7 @@ function loadCurrency() {
   const fromSelect = document.getElementById("fromCurrency");
   const toSelect = document.getElementById("toCurrency");
 
-  if (!container) return;
+  if (!container || !fromSelect || !toSelect) return;
 
   const apiKey = "d6853e194d8c83d637d92f65";
 
@@ -318,7 +286,6 @@ function loadCurrency() {
     .then(res => res.json())
     .then(data => {
       if (data.result !== "success") throw "API Error";
-
       currencyRates = data.conversion_rates;
 
       container.innerHTML = `
@@ -338,59 +305,41 @@ function loadCurrency() {
       fromSelect.value = "LKR";
       toSelect.value = "USD";
     })
-    .catch(() => {
-      container.innerHTML = "<p>Currency rates load වුණේ නැහැ.</p>";
-    });
+    .catch(() => { container.innerHTML = "<p>Currency rates load වුණේ නැහැ.</p>"; });
 }
 
 function convertCurrency() {
-  const amount = parseFloat(document.getElementById("amount").value);
-  const from = document.getElementById("fromCurrency").value;
-  const to = document.getElementById("toCurrency").value;
+  const amountInput = document.getElementById("amount");
+  const fromSelect = document.getElementById("fromCurrency");
+  const toSelect = document.getElementById("toCurrency");
+
+  if (!amountInput || !fromSelect || !toSelect) return;
+
+  const amount = parseFloat(amountInput.value);
+  const from = fromSelect.value;
+  const to = toSelect.value;
 
   if (!currencyRates[from] || !currencyRates[to] || isNaN(amount)) return;
 
   const lkrValue = amount / currencyRates[from];
   const result = lkrValue * currencyRates[to];
 
-  document.getElementById("convertResult").innerText =
-    `${amount} ${from} = ${result.toFixed(2)} ${to}`;
+  const resultBox = document.getElementById("convertResult");
+  if (resultBox) resultBox.innerText = `${amount} ${from} = ${result.toFixed(2)} ${to}`;
 }
 
-// ================= INIT =================
-document.addEventListener("DOMContentLoaded", () => {
-  loadNews();
-  loadFuel();
-  loadWeather();
-  loadCurrency();
-});
-
-//tv
+// ================= TV =================
 const channels = [
-  {
-    name: "Ada Derana LIVE",
-    url: "https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1&mute=1"
-  },
-  {
-    name: "Sirasa TV LIVE",
-    url: "https://www.youtube.com/embed/2Vv-BfVoq4g?autoplay=1&mute=1"
-  },
-  {
-    name: "Hiru TV LIVE",
-    url: "https://www.youtube.com/embed/abc123XYZ?autoplay=1&mute=1"
-  },
-
-   {
-    name: "Srilanka Cricket",
-    url: "https://www.youtube.com/watch?v=LhDR57UXZ1w"
-  }
-
-  
+  { name: "Ada Derana LIVE", url: "https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1&mute=1" },
+  { name: "Sirasa TV LIVE", url: "https://www.youtube.com/embed/2Vv-BfVoq4g?autoplay=1&mute=1" },
+  { name: "Hiru TV LIVE", url: "https://www.youtube.com/embed/abc123XYZ?autoplay=1&mute=1" },
+  { name: "Srilanka Cricket", url: "https://www.youtube.com/watch?v=LhDR57UXZ1w" }
 ];
 
 function loadChannels() {
   const select = document.getElementById("tvSelect");
   const frame = document.getElementById("tvFrame");
+  if (!select || !frame) return;
 
   channels.forEach((ch, index) => {
     const option = document.createElement("option");
@@ -402,42 +351,18 @@ function loadChannels() {
   });
 }
 
-
-
-
-//add kranna oni udata
-
 function changeChannel() {
   const select = document.getElementById("tvSelect");
   const iframe = document.getElementById("tvFrame");
+  if (!select || !iframe) return;
   iframe.src = select.value;
 }
 
-// Dark mode toggle (already in your app.js)
-function toggleDarkMode() {
-  document.body.classList.toggle("dark");
-  localStorage.setItem(
-    "darkMode",
-    document.body.classList.contains("dark") ? "enabled" : "disabled"
-  );
-}
-
-if (localStorage.getItem("darkMode") === "enabled") {
-  document.body.classList.add("dark");
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// ================= INIT =================
+document.addEventListener("DOMContentLoaded", () => {
+  loadNews();
+  loadFuel();
+  loadWeather();
+  loadCurrency();
+  loadChannels();
+});
