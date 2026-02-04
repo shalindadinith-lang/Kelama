@@ -127,34 +127,78 @@ function filterNews() {
 // WEATHER – advanced
 // ---------------------
 function loadWeather() {
-  const container = document.getElementById('weather-info');
-  if (!container) return;
-
-  const apiKey = "a711d55b1e89708be65819eb07c0eeba";
-
-  container.innerHTML = "📍 ඔබේ ස්ථානය ලබාගෙන කාලගුණය ලෝඩ් වෙමින්...";
-
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&appid=${apiKey}&units=metric&lang=si`)
-        .then(res => res.json())
-        .then(data => {
-          container.innerHTML = `
-            <h3>${data.name || 'ඔබේ ප්‍රදේශය'}</h3>
-            <p>🌡️ ${Math.round(data.main.temp)} °C</p>
-            <p>${data.weather[0].description}</p>
-            <p>💧 ආර්ද්‍රතාව: ${data.main.humidity}%</p>
-            <p>💨 සුළඟ: ${data.wind.speed} m/s</p>
-          `;
-        })
-        .catch(() => {
-          container.innerHTML = '<p style="color:#e74c3c;">කාලගුණ තොරතුරු ලබාගත නොහැක.</p>';
-        });
-    },
-    () => {
-      container.innerHTML = '<p style="color:#e74c3c;">ස්ථානය ලබාගැනීමට අවසර නැත.</p>';
+    const container = document.getElementById('weather-info');
+    if (!container) {
+        console.warn("weather-info ID එක හොයාගන්න බැරි වුණා");
+        return;
     }
-  );
+
+    const apiKey = "a711d55b1e89708be65819eb07c0eeba";
+
+    // Loading message
+    container.innerHTML = "📍 ඔබේ ස්ථානය ලබාගෙන කාලගුණය ලෝඩ් වෙමින්...";
+
+    // Geolocation support තියෙනවද කියලා බලමු
+    if (!navigator.geolocation) {
+        container.innerHTML = '<p style="color:#e74c3c;">ඔබේ browser එක location support කරන්නේ නැහැ.</p>';
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+
+            fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=si`)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`API error: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    // API response check
+                    if (data.cod && data.cod !== 200) {
+                        throw new Error(data.message || "API එකෙන් දත්ත ආවේ නැහැ");
+                    }
+
+                    // ඔබේ පරණ format එකට ගැලපෙන output
+                    container.innerHTML = `
+                        <h3>${data.name || 'ඔබේ ප්‍රදේශය'}</h3>
+                        <p>🌡️ ${Math.round(data.main.temp)} °C</p>
+                        <p>${data.weather[0]?.description || 'විස්තරයක් නැහැ'}</p>
+                        <p>💧 ආර්ද්‍රතාව: ${data.main.humidity}%</p>
+                        <p>💨 සුළඟ: ${data.wind?.speed || '--'} m/s</p>
+                        <small>අවසන් යාවත්කාලීනය: ${new Date().toLocaleTimeString('si-LK')}</small>
+                    `;
+                })
+                .catch((err) => {
+                    console.error("Weather fetch error:", err);
+                    let msg = "කාලගුණ තොරතුරු ලබාගත නොහැක.";
+
+                    if (err.message.includes("401")) msg += " (API key වැරදියි)";
+                    if (err.message.includes("429")) msg += " (API calls ඉවරයි)";
+                    if (err.message.includes("404")) msg += " (ස්ථානය හොයාගන්න බැරි වුණා)";
+
+                    container.innerHTML = `<p style="color:#e74c3c;">${msg}</p>`;
+                });
+        },
+        (err) => {
+            console.error("Geolocation error:", err);
+            let msg = "ස්ථානය ලබාගැනීමට අවසර නැත.";
+
+            if (err.code === 1) {
+                msg = "Location access ඉඩ දුන්නේ නැහැ. Browser settings එකෙන් Allow කරන්න.";
+            }
+
+            container.innerHTML = `<p style="color:#e74c3c;">${msg}</p>`;
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+    );
 }
 // ---------------------
 // CURRENCY – nicer result
@@ -188,6 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadWeather();
   }
 });
+
 
 
 
