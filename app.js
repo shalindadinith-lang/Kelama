@@ -1,38 +1,170 @@
-<!DOCTYPE html>
-<html lang="si">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Radio - ශ්‍රී ලංකා</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+// =============================================
+// DARK MODE
+// =============================================
+function toggleDarkMode() {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('darkMode', document.body.classList.contains('dark') ? 'dark' : 'light');
+}
 
-  <header>
-    <h1>Radio Stations</h1>
-    <nav>
-      <a href="index.html">මුල් පිටුව</a>
-      <button onclick="toggleDarkMode()">🌙</button>
-    </nav>
-  </header>
+if (localStorage.getItem('darkMode') === 'dark' ||
+    (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+  document.body.classList.add('dark');
+}
 
-  <main>
-    <section class="card">
-      <h2>Hiru FM Live</h2>
-      <iframe width="100%" height="180" src="https://www.youtube.com/embed/live_stream?channel=UCx0aZqV8nUj5j0i0j0j0j0j" frameborder="0" allowfullscreen></iframe>
-      <p>Live නැත්නම්: <a href="https://www.hirufm.lk/" target="_blank">Hiru FM official</a></p>
-    </section>
+// =============================================
+// CURRENCY RATES & CONVERTER
+// =============================================
+let exchangeRates = null;
 
-    <section class="card">
-      <h2>Shaa FM Live</h2>
-      <audio controls style="width:100%;">
-        <source src="https://stream.shafm.lk/;stream.mp3" type="audio/mpeg">
-        ඔබේ browser එක audio support කරන්නේ නැහැ.
-      </audio>
-    </section>
-  </main>
+function loadCurrencyRates() {
+  const container = document.getElementById('currency-rates');
+  if (!container) return;
 
-  <script src="app.js"></script>
-</body>
-</html>
+  const apiKey = "d6853e194d8c83d637d92f65"; // ඔබේ API key
+
+  fetch(`https://v6.exchangerate-api.com/v6/${apiKey}/latest/LKR`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.result !== "success") throw new Error("API error");
+      
+      exchangeRates = data.conversion_rates;
+      const time = new Date(data.time_last_update_utc).toLocaleString('si-LK');
+
+      container.innerHTML = `
+        <p><strong>1 LKR =</strong></p>
+        <p>USD: ${exchangeRates.USD?.toFixed(4) || '—'}</p>
+        <p>EUR: ${exchangeRates.EUR?.toFixed(4) || '—'}</p>
+        <p>GBP: ${exchangeRates.GBP?.toFixed(4) || '—'}</p>
+        <p>INR: ${exchangeRates.INR?.toFixed(2) || '—'}</p>
+        <small>අන්තිම යාවත්කාලීනය: ${time}</small>
+      `;
+    })
+    .catch(err => {
+      console.error(err);
+      container.innerHTML = '<p style="color:#e74c3c;">මුදල් අනුපාත ලබාගත නොහැකි විය.</p>';
+    });
+}
+
+function convertNow() {
+  if (!exchangeRates) {
+    document.getElementById('conversion-result').innerHTML = 
+      '<span style="color:#e74c3c;">අනුපාත තවමත් ලෝඩ් වී නැත.</span>';
+    return;
+  }
+
+  const amount = parseFloat(document.getElementById('amount').value);
+  const currency = document.getElementById('to-currency').value;
+  const resultEl = document.getElementById('conversion-result');
+
+  if (!amount || amount <= 0) {
+    resultEl.innerHTML = '<span style="color:#e74c3c;">කරුණාකර හරි ලෙස මුදලක් ඇතුලත් කරන්න.</span>';
+    return;
+  }
+
+  const rate = exchangeRates[currency];
+  if (!rate) {
+    resultEl.textContent = 'මෙම මුදල සඳහා අනුපාතයක් නැත.';
+    return;
+  }
+
+  const converted = amount * rate;
+  resultEl.innerHTML = `${amount.toLocaleString('si-LK')} LKR = <strong>${converted.toFixed(4)} ${currency}</strong>`;
+}
+
+// =============================================
+// NEWS (Ada Derana RSS)
+// =============================================
+let allNews = [];
+
+function loadNews() {
+  const container = document.getElementById('news-container');
+  if (!container) return;
+
+  fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.adaderana.lk/rss.php')
+    .then(res => res.json())
+    .then(data => {
+      if (!data.items) throw new Error('No items');
+      allNews = data.items.slice(0, 12);
+      renderNews(allNews);
+    })
+    .catch(() => {
+      container.innerHTML = '<p style="color:#e74c3c;">පුවත් ලබාගත නොහැකි විය.</p>';
+    });
+}
+
+function renderNews(items) {
+  const container = document.getElementById('news-container');
+  if (!container) return;
+
+  container.innerHTML = '';
+  items.forEach(item => {
+    container.innerHTML += `
+      <div class="news-item">
+        <h3><a href="${item.link}" target="_blank">${item.title}</a></h3>
+        <small>${new Date(item.pubDate).toLocaleString('si-LK')}</small>
+        <p>${item.description.substring(0,160)}${item.description.length > 160 ? '...' : ''}</p>
+      </div>
+    `;
+  });
+}
+
+function filterNews() {
+  const search = document.getElementById('news-search')?.value.toLowerCase() || '';
+  if (!allNews.length) return;
+
+  const filtered = allNews.filter(item =>
+    item.title.toLowerCase().includes(search) ||
+    item.description.toLowerCase().includes(search)
+  );
+
+  renderNews(filtered);
+}
+
+// =============================================
+// WEATHER
+// =============================================
+function loadWeather() {
+  const container = document.getElementById('weather-info');
+  if (!container) return;
+
+  const apiKey = "a711d55b1e89708be65819eb07c0eeba";
+
+  container.innerHTML = "📍 ඔබේ ස්ථානය ලබාගෙන කාලගුණය ලෝඩ් වෙමින්...";
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&appid=${apiKey}&units=metric&lang=si`)
+        .then(res => res.json())
+        .then(data => {
+          container.innerHTML = `
+            <h3>${data.name || 'ඔබේ ප්‍රදේශය'}</h3>
+            <p>🌡️ ${Math.round(data.main.temp)} °C</p>
+            <p>${data.weather[0].description}</p>
+            <p>💧 ආර්ද්‍රතාව: ${data.main.humidity}%</p>
+            <p>💨 සුළඟ: ${data.wind.speed} m/s</p>
+          `;
+        })
+        .catch(() => {
+          container.innerHTML = '<p style="color:#e74c3c;">කාලගුණ තොරතුරු ලබාගත නොහැක.</p>';
+        });
+    },
+    () => {
+      container.innerHTML = '<p style="color:#e74c3c;">ස්ථානය ලබාගැනීමට අවසර නැත.</p>';
+    }
+  );
+}
+
+// =============================================
+// INIT
+// =============================================
+document.addEventListener('DOMContentLoaded', () => {
+  loadCurrencyRates();
+
+  if (document.getElementById('news-container')) {
+    loadNews();
+  }
+
+  if (document.getElementById('weather-info')) {
+    loadWeather();
+  }
+});
