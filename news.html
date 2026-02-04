@@ -1,33 +1,27 @@
 <!DOCTYPE html>
 <html lang="si">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>සිංහල පුවත්</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>පුවත් - ශ්‍රී ලංකා</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+
   <header>
-    <h1>සිංහල පුවත්</h1>
-
+    <h1>නවතම පුවත්</h1>
     <nav>
-      <button onclick="loadNews('all')">සියලු</button>
-      <button onclick="loadNews('local')">දේශීය</button>
-      <button onclick="loadNews('world')">ලෝක</button>
-      <button onclick="loadNews('sports')">ක්‍රීඩා</button>
-      <button onclick="loadNews('business')">ව්‍යාපාර</button>
-      <button class="refresh-btn" onclick="loadNews(currentCategory, true)">🔄 Refresh</button>
+      <a href="index.html">මුල් පිටුව</a>
+      <button onclick="toggleDarkMode()">🌙</button>
     </nav>
-
-    <p id="status-text">Ready</p>
   </header>
 
   <main>
-    <section id="news-container">
-      <p>පුවත් ලෝඩ් වෙමින්...</p>
+    <section class="card">
+      <h2>අලුත්ම පුවත් (Ada Derana)</h2>
+      <input type="text" id="news-search" placeholder="පුවත් සෙවීම..." oninput="filterNews()">
+      <div id="news-container">පුවත් ලෝඩ් වෙමින්...</div>
     </section>
   </main>
 
