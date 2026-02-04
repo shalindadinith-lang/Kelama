@@ -225,3 +225,39 @@ body.dark #news-search {
   color: white;
   border-color: #555;
 }
+
+
+/* Weather icons & layout improvements */
+#weather-info img {
+    margin: 0 auto;
+    display: block;
+}
+
+#weather-info h3 {
+    font-size: 1.7rem;
+    margin: 0.8rem 0 0.4rem;
+    color: #004d00;
+}
+
+body.dark #weather-info h3 {
+    color: #88ffaa;
+}
+
+#weather-info p {
+    margin: 0.5rem 0;
+    font-size: 1.18rem;
+}
+
+#weather-info strong {
+    font-size: 1.25rem;
+    color: #006600;
+}
+
+body.dark #weather-info strong {
+    color: #66ff99;
+}
+
+
+
+
+
