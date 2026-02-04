@@ -4,55 +4,55 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ශ්‍රී ලංකා Live Info Hub 🇱🇰</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<header>
-  <h1>ශ්‍රී ලංකා Live Info Hub 🇱🇰</h1>
-  <nav>
-    <a href="index.html">මුල් පිටුව</a>
-    <a href="news.html">පුවත්</a>
-    <a href="tv.html">Live TV</a>
-    <a href="weather.html">කාලගුණය</a>
-    <a href="fuel.html">ඉන්ධන මිල</a>
-    <a href="powercut.html">විදුලි කප්පාදු</a>
-    <button onclick="toggleDarkMode()">🌙</button>
-  </nav>
-</header>
+  <header>
+    <h1>ශ්‍රී ලංකා Live Info Hub</h1>
+    <nav>
+      <a href="index.html">මුල් පිටුව</a>
+      <a href="news.html">පුවත්</a>
+      <a href="fuel.html">ඉන්ධන මිල</a>
+      <a href="weather.html">කාලගුණය</a>
+      <a href="powercut.html">විදුලි බිඳවැටීම්</a>
+      <a href="radio.html">Radio</a>
+      <button onclick="toggleDarkMode()">🌙</button>
+    </nav>
+  </header>
 
-<main>
-  <h2>සාදරයෙන් පිළිගන්නවා!</h2>
-  <p style="text-align:center;">
-    පුවත් • Live TV • කාලගුණය • ඉන්ධන මිල • විදුලි කප්පාදු
-  </p>
+  <main>
 
- <section class="card">
-    <h3>Current Rates (1 LKR)</h3>
-    <div id="currency-container">
-      <p>ලෝඩ් වෙමින්...</p>
-    </div>
+    <section class="welcome">
+      <h2>සාදරයෙන් පිළිගන්නවා! 🇱🇰</h2>
+      <p>නවතම තොරතුරු එකම තැනකින් බලන්න.</p>
+    </section>
 
-    <hr style="margin:15px 0;">
+    <!-- Currency Converter -->
+    <section class="card currency-section">
+      <h2>මුදල් හුවමාරුව (LKR)</h2>
+      
+      <div id="currency-rates" class="rates-display">
+        <p>වත්මන් අනුපාත ලෝඩ් වෙමින්...</p>
+      </div>
 
-    <div class="converter">
-      <input type="number" id="amount" placeholder="Amount" value="1">
-      <select id="fromCurrency"></select>
-      <span style="font-weight:bold;">➡</span>
-      <select id="toCurrency"></select>
-      <button onclick="convertCurrency()">Convert</button>
-      <h4 id="convertResult"></h4>
-    </div>
-  </section>
+      <div class="converter-controls">
+        <input type="number" id="amount" placeholder="LKR එකතු කරන්න" min="0" step="any">
+        <select id="to-currency">
+          <option value="USD">USD - ඇමරිකානු ඩොලර්</option>
+          <option value="EUR">EUR - යුරෝ</option>
+          <option value="GBP">GBP - බ්‍රිතාන්‍ය පවුම්</option>
+          <option value="INR">INR - ඉන්දියානු රුපියල්</option>
+        </select>
+        <button onclick="convertNow()">Convert කරන්න</button>
+      </div>
 
-</main>
+      <div id="conversion-result" class="result-box"></div>
+    </section>
 
-<script src="app.js"></script>
+  </main>
+
+  <script src="app.js"></script>
 </body>
 </html>
-
-
-
