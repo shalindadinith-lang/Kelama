@@ -1,39 +1,36 @@
 <!DOCTYPE html>
 <html lang="si">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>පුවත් - ශ්‍රී ලංකා Live</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>සිංහල පුවත්</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <header>
-    <h1>ශ්‍රී ලංකාවේ පුවත්</h1>
+    <h1>සිංහල පුවත්</h1>
+
     <nav>
-      <a href="index.html">මුල් පිටුව</a>
-      <a href="news.html">පුවත්</a>
-      <a href="tv.html">Live TV</a>
-      <a href="weather.html">කාලගුණය</a>
-      <a href="fuel.html">ඉන්ධන මිල</a>
-      <a href="powercut.html">විදුලි බිඳවැටීම්</a>
-      <button onclick="toggleDarkMode()">🌙 Dark Mode</button>
+      <button onclick="loadNews('all')">සියලු</button>
+      <button onclick="loadNews('local')">දේශීය</button>
+      <button onclick="loadNews('world')">ලෝක</button>
+      <button onclick="loadNews('sports')">ක්‍රීඩා</button>
+      <button onclick="loadNews('business')">ව්‍යාපාර</button>
+      <button class="refresh-btn" onclick="loadNews(currentCategory, true)">🔄 Refresh</button>
     </nav>
+
+    <p id="status-text">Ready</p>
   </header>
+
   <main>
-    <h2>නවතම පුවත් (Ada Derana)</h2>
-    <input type="text" id="news-search" placeholder="පුවත් සෙවීම..." oninput="filterNews()">
     <section id="news-container">
       <p>පුවත් ලෝඩ් වෙමින්...</p>
     </section>
   </main>
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <iframe id="article-frame" frameborder="0" sandbox="allow-scripts allow-same-origin"></iframe>
-    </div>
-  </div>
+
   <script src="app.js"></script>
 </body>
 </html>
-
