@@ -15,31 +15,31 @@ if (localStorage.getItem("darkMode") === "enabled") {
 // ================= NEWS =================
 let newsItems = [];
 
-function loadNews() {
+function loadAndRenderNews() {
   const container = document.getElementById("news-container");
   if (!container) return;
   fetch("https://api.rss2json.com/v1/api.json?rss_url=https://www.adaderana.lk/rss.php")
     .then(res => res.json())
     .then(data => {
-      if (!data.items) throw "No news";
-      newsItems = data.items.slice(0, 20); // first 20 news
-      renderNews();
+      newsItems = data.items ? data.items.slice(0, 20) : [];
+      renderNews(newsItems);
     })
-    .catch(() => {
-      container.innerHTML = "<p style='color:red;'>පුවත් ලබාගත නොහැක.</p>";
-    });
+    .catch(() => container.innerHTML = "<p style='color:red;'>පුවත් ලබාගත නොහැක.</p>");
 }
 
-function renderNews(items = newsItems) {
+function renderNews(items) {
   const container = document.getElementById("news-container");
-  if (!container) return;
   container.innerHTML = "";
   items.forEach(item => {
+    const imgMatch = item.description.match(/src=['"]([^'"]+)['"]/);
+    const imgSrc = imgMatch ? imgMatch[1] : '';
+    const text = item.description.replace(/<img.*?>/, '').trim();
     container.innerHTML += `
       <div class="news-item">
-        <h3><a href="#" onclick="showArticle('${item.link}')">${item.title}</a></h3>
+        ${imgSrc ? `<img src="${imgSrc}" alt="News Image" style="max-width:100%;height:auto;margin-bottom:10px;">` : ''}
+        <h3><a href="#" onclick="showArticle('${item.link}');return false;">${item.title}</a></h3>
         <small>${new Date(item.pubDate).toLocaleString("si-LK")}</small>
-        <p>${item.description}</p> <!-- Removed substring to show full description -->
+        <p>${text}</p>
       </div>
     `;
   });
@@ -47,48 +47,38 @@ function renderNews(items = newsItems) {
 
 function filterNews() {
   const search = document.getElementById('news-search').value.toLowerCase();
-  const filtered = newsItems.filter(item => 
-    item.title.toLowerCase().includes(search) || 
-    item.description.toLowerCase().includes(search)
-  );
+  const filtered = newsItems.filter(item => item.title.toLowerCase().includes(search) || item.description.toLowerCase().includes(search));
   renderNews(filtered);
 }
 
 function showArticle(url) {
-  document.getElementById('article-frame').src = url;
+  const frame = document.getElementById('article-frame');
+  frame.src = url;
+  frame.onload = () => console.log('Iframe loaded successfully');
+  frame.onerror = () => console.error('Iframe load error - possibly framing restricted');
   document.getElementById('modal').style.display = 'block';
 }
 
 function closeModal() {
-  document.getElementById('modal').style.display = 'none';
+  const modal = document.getElementById('modal');
+  modal.style.display = 'none';
   document.getElementById('article-frame').src = '';
 }
 
-// Close modal on outside click
-window.onclick = function(event) {
-  var modal = document.getElementById('modal');
-  if (event.target == modal) {
-    closeModal();
-  }
-}
+window.onclick = event => {
+  const modal = document.getElementById('modal');
+  if (event.target === modal) closeModal();
+};
 
 function toggleDarkMode() {
   document.body.classList.toggle('dark');
-  if (document.body.classList.contains('dark')) {
-    localStorage.setItem('theme', 'dark');
-  } else {
-    localStorage.setItem('theme', 'light');
-  }
+  localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
 }
 
-// Load theme on page load
 const theme = localStorage.getItem('theme');
-if (theme === 'dark') {
-  document.body.classList.add('dark');
-}
+if (theme === 'dark') document.body.classList.add('dark');
 
-// Load news on page load
-loadNews();
+loadAndRenderNews();
 
 // ================= SEARCH FILTER =================
 function filterNews() {
@@ -329,6 +319,7 @@ function toggleDarkMode() {
 if (localStorage.getItem("darkMode") === "enabled") {
   document.body.classList.add("dark");
 }
+
 
 
 
