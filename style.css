@@ -4,7 +4,6 @@
   padding: 0;
   box-sizing: border-box;
 }
-
 /* BODY */
 body {
   font-family: 'Noto Sans Sinhala', sans-serif;
@@ -13,13 +12,11 @@ body {
   line-height: 1.6;
   transition: background 0.3s, color 0.3s;
 }
-
 /* DARK MODE */
 body.dark {
   background: #121212;
   color: #e0e0e0;
 }
-
 /* HEADER */
 header {
   background: linear-gradient(135deg, #006600, #00a000);
@@ -28,24 +25,20 @@ header {
   text-align: center;
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
-
 /* NAV */
 nav {
   margin-top: 10px;
   text-align: center;
 }
-
 nav a {
   color: #fff;
   margin: 0 12px;
   text-decoration: none;
   font-weight: 600;
 }
-
 nav a:hover {
   text-decoration: underline;
 }
-
 nav button {
   background: #fff;
   color: #006600;
@@ -55,20 +48,17 @@ nav button {
   cursor: pointer;
   font-weight: bold;
 }
-
 /* MAIN */
 main {
   max-width: 1000px;
   margin: 25px auto;
   padding: 0 15px;
 }
-
 /* TITLES */
 h1, h2 {
   text-align: center;
   margin-bottom: 15px;
 }
-
 /* SEARCH BOX */
 #news-search {
   width: 100%;
@@ -78,7 +68,6 @@ h1, h2 {
   margin-bottom: 20px;
   font-size: 1rem;
 }
-
 /* CARD NEWS ITEM */
 .news-item {
   background: #fff;
@@ -88,50 +77,80 @@ h1, h2 {
   box-shadow: 0 5px 15px rgba(0,0,0,0.08);
   transition: transform 0.2s;
 }
-
 .news-item:hover {
   transform: translateY(-3px);
 }
-
 .news-item h3 {
   margin-bottom: 8px;
 }
-
 .news-item h3 a {
   color: #006600;
   text-decoration: none;
 }
-
 .news-item h3 a:hover {
   text-decoration: underline;
 }
-
 .news-item small {
   display: block;
   margin-bottom: 8px;
   color: #666;
   font-size: 0.9rem;
 }
-
 .news-item p {
   font-size: 0.95rem;
 }
-
 /* DARK MODE CARD */
 body.dark .news-item {
   background: #1e1e1e;
 }
-
-
 iframe {
   width: 100%;
   height: 360px;
   border-radius: 12px;
   border: none;
 }
-
 /* MOBILE */
 @media (max-width: 600px) {
   nav a { display: block; margin: 8px 0; }
 }
-
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+  padding-top: 60px;
+}
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 800px;
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+body.dark .modal-content {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+#article-frame {
+  width: 100%;
+  height: 500px;
+}
