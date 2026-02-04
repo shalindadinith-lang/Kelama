@@ -4,10 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>පුවත් - ශ්‍රී ලංකා Live</title>
-
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala&display=swap" rel="stylesheet">
-
   <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
@@ -24,17 +22,20 @@
       <button onclick="toggleDarkMode()">🌙 Dark Mode</button>
     </nav>
   </header>
-
   <main>
     <h2>නවතම පුවත් (Ada Derana)</h2>
-
     <input type="text" id="news-search" placeholder="පුවත් සෙවීම..." oninput="filterNews()">
-
     <section id="news-container">
       <p>පුවත් ලෝඩ් වෙමින්...</p>
     </section>
   </main>
-
+  <!-- Modal for article view -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <iframe id="article-frame" frameborder="0"></iframe>
+    </div>
+  </div>
   <!-- JS -->
   <script src="app.js"></script>
 </body>
