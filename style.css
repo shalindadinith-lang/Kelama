@@ -154,3 +154,172 @@ body.dark .modal-content {
   width: 100%;
   height: 500px;
 }
+
+
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Base */
+body {
+  font-family: 'Noto Sans Sinhala', sans-serif;
+  background: #f4f6f8;
+  color: #222;
+  line-height: 1.6;
+}
+
+/* Header */
+header {
+  background: #006600;
+  color: #fff;
+  padding: 18px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+/* Navigation */
+nav {
+  margin-top: 10px;
+}
+
+nav button {
+  background: #fff;
+  color: #006600;
+  border: none;
+  padding: 8px 16px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+nav button:hover {
+  transform: scale(1.03);
+}
+
+.refresh-btn {
+  background: #ffcc00;
+  color: #000;
+}
+
+/* Status Text */
+#status-text {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* Main */
+main {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 10px;
+}
+
+/* Container */
+#news-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+/* News Card */
+.news-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 7px rgba(0,0,0,0.1);
+  margin: 10px;
+  padding: 15px;
+  width: calc(33% - 20px);
+  text-align: right;
+}
+
+.news-card img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.news-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.news-card a {
+  color: #006600;
+  text-decoration: none;
+}
+
+.news-card a:hover {
+  text-decoration: underline;
+}
+
+.news-card p {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* Share Button */
+.news-card button {
+  margin-top: 8px;
+  background: #4267B2;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 0.9rem;
+}
+
+.news-card button:hover {
+  opacity: 0.9;
+}
+
+/* Loading/Error */
+#news-container p {
+  width: 100%;
+  text-align: center;
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .news-card {
+    width: calc(50% - 20px);
+  }
+}
+
+@media (max-width: 600px) {
+  .news-card {
+    width: 100%;
+  }
+
+  nav button {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+
+
+
+
+
+
+
+
+
