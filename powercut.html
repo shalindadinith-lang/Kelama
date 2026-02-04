@@ -4,26 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>විදුලි බිඳවැටීම්</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header><!-- header + nav --></header>
+
+  <header>
+    <h1>විදුලි කප්පාදු</h1>
+    <nav>
+      <a href="index.html">මුල් පිටුව</a>
+      <button onclick="toggleDarkMode()">🌙</button>
+    </nav>
+  </header>
+
   <main>
-    <h2>අද විදුලි කප්පාදු schedule</h2>
-    <select id="district-select" onchange="loadPowerCuts()">
-      <option value="">District select කරන්න</option>
-      <option value="colombo">කොළඹ</option>
-      <option value="gampaha">ගම්පහ</option>
-      <!-- Add more districts -->
-    </select>
-    <section id="powercut-container">Schedule ලෝඩ් වෙමින්...</section>
-    <p>CEB official site එකෙන් බලන්න:</p>
-    <ul>
-      <li><a href="https://cebcare.ceb.lk/Incognito/DemandMgmtSchedule" target="_blank">Demand Management Schedule →</a></li>
-      <li><iframe src="https://cebcare.ceb.lk/Incognito/outagemap" width="100%" height="400"></iframe></li>
-    </ul>
+    <section class="card">
+      <h2>අද විදුලි කප්පාදු Schedule</h2>
+      <p>CEB official site එකෙන් බලන්න:</p>
+      <ul>
+        <li><a href="https://cebcare.ceb.lk/Incognito/DemandMgmtSchedule" target="_blank">Demand Management Schedule</a></li>
+      </ul>
+      <iframe src="https://cebcare.ceb.lk/Incognito/outagemap" width="100%" height="500" frameborder="0"></iframe>
+    </section>
   </main>
+
   <script src="app.js"></script>
 </body>
 </html>
