@@ -129,7 +129,7 @@ function filterNews() {
 function loadWeather() {
     const container = document.getElementById('weather-info');
     if (!container) {
-        console.warn("weather-info ID එක හොයාගන්න බැරි වුණා");
+        console.warn("weather-info element හොයාගන්න බැරි වුණා");
         return;
     }
 
@@ -138,7 +138,6 @@ function loadWeather() {
     // Loading message
     container.innerHTML = "📍 ඔබේ ස්ථානය ලබාගෙන කාලගුණය ලෝඩ් වෙමින්...";
 
-    // Geolocation support තියෙනවද කියලා බලමු
     if (!navigator.geolocation) {
         container.innerHTML = '<p style="color:#e74c3c;">ඔබේ browser එක location support කරන්නේ නැහැ.</p>';
         return;
@@ -157,12 +156,10 @@ function loadWeather() {
                     return response.json();
                 })
                 .then((data) => {
-                    // API response check
                     if (data.cod && data.cod !== 200) {
                         throw new Error(data.message || "API එකෙන් දත්ත ආවේ නැහැ");
                     }
 
-                    // ඔබේ පරණ format එකට ගැලපෙන output
                     container.innerHTML = `
                         <h3>${data.name || 'ඔබේ ප්‍රදේශය'}</h3>
                         <p>🌡️ ${Math.round(data.main.temp)} °C</p>
@@ -177,7 +174,7 @@ function loadWeather() {
                     let msg = "කාලගුණ තොරතුරු ලබාගත නොහැක.";
 
                     if (err.message.includes("401")) msg += " (API key වැරදියි)";
-                    if (err.message.includes("429")) msg += " (API calls ඉවරයි)";
+                    if (err.message.includes("429")) msg += " (API calls ඉවරයි - පසුව උත්සාහ කරන්න)";
                     if (err.message.includes("404")) msg += " (ස්ථානය හොයාගන්න බැරි වුණා)";
 
                     container.innerHTML = `<p style="color:#e74c3c;">${msg}</p>`;
@@ -232,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadWeather();
   }
 });
+
 
 
 
