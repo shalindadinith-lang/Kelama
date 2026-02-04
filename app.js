@@ -135,7 +135,6 @@ function loadWeather() {
 
     const apiKey = "a711d55b1e89708be65819eb07c0eeba";
 
-    // Loading message
     container.innerHTML = "📍 ඔබේ ස්ථානය ලබාගෙන කාලගුණය ලෝඩ් වෙමින්...";
 
     if (!navigator.geolocation) {
@@ -160,13 +159,31 @@ function loadWeather() {
                         throw new Error(data.message || "API එකෙන් දත්ත ආවේ නැහැ");
                     }
 
+                    // Get weather icon code (e.g. "01d", "04n", "10d")
+                    const iconCode = data.weather[0]?.icon || '01d';
+
+                    // Build icon URL (OpenWeatherMap provides 2x size for better quality)
+                    const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+
                     container.innerHTML = `
+                        <div style="text-align: center; margin-bottom: 1rem;">
+                            <img src="${iconUrl}" alt="${data.weather[0]?.description || 'කාලගුණය'}" 
+                                 style="width: 100px; height: 100px; object-fit: contain;">
+                        </div>
                         <h3>${data.name || 'ඔබේ ප්‍රදේශය'}</h3>
-                        <p>🌡️ ${Math.round(data.main.temp)} °C</p>
-                        <p>${data.weather[0]?.description || 'විස්තරයක් නැහැ'}</p>
-                        <p>💧 ආර්ද්‍රතාව: ${data.main.humidity}%</p>
-                        <p>💨 සුළඟ: ${data.wind?.speed || '--'} m/s</p>
-                        <small>අවසන් යාවත්කාලීනය: ${new Date().toLocaleTimeString('si-LK')}</small>
+                        <p style="font-size: 1.8rem; font-weight: bold; margin: 0.5rem 0;">
+                            ${Math.round(data.main.temp)} °C
+                        </p>
+                        <p style="font-size: 1.2rem; color: #555;">
+                            ${data.weather[0]?.description || 'විස්තරයක් නැහැ'}
+                        </p>
+                        <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 1.2rem;">
+                            <p>💧 <strong>${data.main.humidity}%</strong></p>
+                            <p>💨 <strong>${data.wind?.speed || '--'} m/s</strong></p>
+                        </div>
+                        <small style="display: block; margin-top: 1.5rem; color: #777;">
+                            අවසන් යාවත්කාලීනය: ${new Date().toLocaleTimeString('si-LK')}
+                        </small>
                     `;
                 })
                 .catch((err) => {
@@ -177,7 +194,7 @@ function loadWeather() {
                     if (err.message.includes("429")) msg += " (API calls ඉවරයි - පසුව උත්සාහ කරන්න)";
                     if (err.message.includes("404")) msg += " (ස්ථානය හොයාගන්න බැරි වුණා)";
 
-                    container.innerHTML = `<p style="color:#e74c3c;">${msg}</p>`;
+                    container.innerHTML = `<p style="color:#e74c3c; text-align:center;">${msg}</p>`;
                 });
         },
         (err) => {
@@ -188,7 +205,7 @@ function loadWeather() {
                 msg = "Location access ඉඩ දුන්නේ නැහැ. Browser settings එකෙන් Allow කරන්න.";
             }
 
-            container.innerHTML = `<p style="color:#e74c3c;">${msg}</p>`;
+            container.innerHTML = `<p style="color:#e74c3c; text-align:center;">${msg}</p>`;
         },
         {
             enableHighAccuracy: true,
@@ -229,6 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadWeather();
   }
 });
+
 
 
 
