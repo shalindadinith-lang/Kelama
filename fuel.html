@@ -3,35 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ඉන්ධන මිල 📊</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala&display=swap" rel="stylesheet">
+  <title>ඉන්ධන මිල</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
 
-<header>
-  <h1>ඉන්ධන මිල 📊</h1>
-  <nav>
-    <a href="index.html">⬅ Back</a>
-    <button onclick="toggleDarkMode()">🌙</button>
-  </nav>
-</header>
+  <header>
+    <h1>ඉන්ධන මිල</h1>
+    <nav>
+      <a href="index.html">මුල් පිටුව</a>
+      <button onclick="toggleDarkMode()">🌙</button>
+    </nav>
+  </header>
 
-<main>
+  <main>
+    <section class="card">
+      <h2>වත්මන් CPC ඉන්ධන මිල</h2>
+      <div id="fuel-container">
+        <p>Petrol 92 Octane: <strong>Rs. 292.00</strong></p>
+        <p>Petrol 95 Octane: <strong>Rs. 340.00</strong></p>
+        <p>Auto Diesel: <strong>Rs. 277.00</strong></p>
+        <p>Super Diesel: <strong>Rs. 323.00</strong></p>
+        <small>යාවත්කාලීනය: CPC official (hard-coded)</small>
+      </div>
+    </section>
+  </main>
 
-  <section class="card">
-    <h3>📊 අද ඉන්ධන මිල (LKR)</h3>
-    <canvas id="fuelChart"></canvas>
-  </section>
-
-</main>
-
-<script src="app.js"></script>
-<script src="fuel.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
